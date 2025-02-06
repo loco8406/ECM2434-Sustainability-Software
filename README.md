@@ -2,9 +2,9 @@
 
 ## Prerequisites
 Please ensure that you have the correct version of Python installed.\
-Python Version: **3.10.11**\
+Python Version: **3.10.11**
 
 *This software is not garuanteed to be compatible with other versions than the one listed above*
 
 The following Python packages are also required for operation:\
--Django (Version: 5.1.6)
+-**Django** (Version: 5.1.6)
