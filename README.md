@@ -7,5 +7,5 @@ Django Version: **5.1.6**
 
 *This software is not garuanteed to be compatible with other versions than the ones listed above*
 
-The following Python packages are also required for operation:\
+The following Python packages are also required for operation:
 
