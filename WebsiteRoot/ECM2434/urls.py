@@ -20,4 +20,5 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('envapp/', include("envapp.urls")),
+    path('', include('envapp.urls')),  # Include URLs from envapp
 ]
