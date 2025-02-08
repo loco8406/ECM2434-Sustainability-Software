@@ -17,3 +17,7 @@ def register(request):
     else:
         form = UserCreationForm()  # Display an empty form for GET requests
     return render(request, 'envapp/register.html', {'form': form})
+
+
+def login_view(request):
+    return render(request, 'envapp/login.html')
