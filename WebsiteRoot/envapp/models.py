@@ -35,7 +35,7 @@ class UserTable(AbstractUser):
     def subtractPoints(self, pointsLost):
         self.points += pointsLost
         self.save()
-  
+
 class Videos(models.Model):
     #This stores the videos for the eventual video watching task
     videoTitle = models.CharField(max_length=200) # For video title
@@ -47,8 +47,8 @@ class Videos(models.Model):
         return self.videoTitle
 
 class VideoWatchers(models.Model):
-    userID = models.ForeignKey(UserTable, on_delete=models.CASCADE) # Stores the user ID of the user who has watched the video
-    videoID = models.ForeignKey(Videos, on_delete=models.CASCADE) # Stores the video ID of the video that has been watched
+    userID = models.IntegerField() # Stores the user ID of the user who has watched the video
+    videoID = models.IntegerField() # Stores the video ID of the video that has been watched
     watchTime = models.DateTimeField(auto_now_add=True) # Automatically adds the date the video has been watched/clicked
 
 class Challenge(models.Model):
