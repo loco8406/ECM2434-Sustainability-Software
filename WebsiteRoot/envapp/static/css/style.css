@@ -1,0 +1,96 @@
+/* envapp/static/css/style.css */
+
+:root {
+    --exeter-green: #00A398;
+    --exeter-dark-green: #00857B;
+    --light-gray: #f4f4f4;
+    --border-color: #ddd;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-color: #333;
+    --success-bg: #d4edda;
+    --success-color: #155724;
+    --error-bg: #f8d7da;
+    --error-color: #721c24;
+}
+
+body {
+    background-color: var(--light-gray);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    color: var(--exeter-green);
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+form {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px var(--shadow-color);
+    width: 90%;
+    max-width: 400px;
+}
+
+form p {
+    margin-bottom: 15px;
+    text-align: left; /* Important for labels to align left */
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+input, /* Style both input and select elements */
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: var(--exeter-green);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+button:hover {
+    background-color: var(--exeter-dark-green);
+}
+
+/* Messages styling */
+.message { /* More general class selector */
+    padding: 8px;
+    border-radius: 4px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.success {
+    background-color: var(--success-bg);
+    color: var(--success-color);
+}
+
+.error {
+    background-color: var(--error-bg);
+    color: var(--error-color);
+}
