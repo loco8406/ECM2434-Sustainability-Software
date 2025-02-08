@@ -35,7 +35,7 @@ class UserTable(AbstractUser):
     def subtractPoints(self, pointsLost):
         self.points += pointsLost
         self.save()
-
+        
 class Videos(models.Model):
     #This stores the videos for the eventual video watching task
     videoTitle = models.CharField(max_length=200) # For video title
