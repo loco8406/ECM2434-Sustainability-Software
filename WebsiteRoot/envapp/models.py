@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 class UserTable(AbstractUser):
     # This extends the included User model 
-    role = models.CharField(max_length=30) #Intented to store the role of the user
+    role = models.CharField(max_length=30, default='user')  
     points = models.IntegerField(default=0) # Keeps track of this user's points
     
     # Returns the role of the user
