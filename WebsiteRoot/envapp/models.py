@@ -4,10 +4,38 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class UserTable(AbstractUser):
-    # This extends the included User model
-    role = models.CharField(max_length=30)
-    points = models.IntegerField(default=0)
-
+    # This extends the included User model 
+    role = models.CharField(max_length=30) #Intented to store the role of the user
+    points = models.IntegerField(default=0) # Keeps track of this user's points
+    
+    # Returns the role of the user
+    def getRole(self):
+        return self.role
+    
+    # Returns the number of points
+    def getPoints(self):
+        return self.points
+     
+    # Sets the role of the user
+    def setRole(self, newRole):
+        self.role = newRole
+        self.save()
+        
+    # Overrides the current points value a new one (SHOULD NOT BE USED EXCEPT FOR ADMIN FUNCTIONS, OTHERWISE USE addPoints/subtractPoints)
+    def setPoints(self, newPoints):
+        self.points = newPoints
+        self.save()
+        
+    # Increases the points by a specified amount
+    def addPoints(self, pointsScored):
+        self.points += pointsScored
+        self.save()
+        
+    # Decreases the points by a specified amount (Unsure of use case yet, perhaps for ADMIN?)
+    def subtractPoints(self, pointsLost):
+        self.points += pointsLost
+        self.save()
+  
 class Videos(models.Model):
     #This stores the videos for the eventual video watching task
     videoTitle = models.CharField(max_length=200) # For video title
