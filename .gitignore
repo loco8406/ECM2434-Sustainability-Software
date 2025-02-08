@@ -2,3 +2,4 @@ venv/
 
 /WebsiteRoot/ECM2434/__pycache__
 /WebsiteRoot/envapp/__pycache__
+db.sqlite3
