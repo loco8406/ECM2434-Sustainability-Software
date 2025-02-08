@@ -6,4 +6,5 @@ urlpatterns = [
     path("", views.index, name="index"),
     path('register/', views.register, name='register'),  # Registration page
     path('gamekeeper/', views.gamekeeper, name='gamekeeper'),
+    path ('Admin/', views.admin_login, name = 'Admin') # Admin login
 ]
