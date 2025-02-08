@@ -35,3 +35,16 @@ def gamekeeper(request):
         form = ChallengeForm()  # Empty form for GET request
 
     return render(request, 'envapp/gamekeeper.html', {'form': form})
+
+
+def admin_login(request):
+    if request.method == 'POST': #If form has been submitted
+        page = UserCreationForm(request.POST)
+        if page.is_valid():
+            page.save()
+            username = page.cleaned_data('username') 
+            messages.success(request, f'Account created for {username}')
+            return redirect('admin')
+    else:
+        page = UserCreationForm()
+    return render(request, 'envapp/Admin.html', {'page': page})
