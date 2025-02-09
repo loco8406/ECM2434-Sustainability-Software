@@ -1,0 +1,13 @@
+<html>
+<head>
+    <title>Add a Video</title>
+</head>
+<body>
+    <h1>Add a Video</h1>
+    <form method="post">
+		{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Video</button>
+    </form>
+</body>
+</html>

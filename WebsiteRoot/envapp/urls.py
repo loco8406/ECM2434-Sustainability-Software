@@ -9,5 +9,8 @@ urlpatterns = [
     path('gamekeeper/', views.gamekeeper, name='gamekeeper'),
     path ('Admin/', views.admin_login, name = 'Admin'), # Admin login
     path('userPortal/', views.userPortal, name='userPortal'),
-    path('logout/', authViews.LogoutView.as_view(), name='logout') # Log out
+    path('logout/', authViews.LogoutView.as_view(), name='logout'), # Log out
+    path('videos/', views.videoList, name='videos'),
+    path('addVideo/', views.addVideo, name='addVideo'),
+    path('watchVideo/<int:video_id>/', views.videoWatchEvent, name='watchVideo'),
 ]

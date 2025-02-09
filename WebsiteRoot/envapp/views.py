@@ -1,12 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .forms import ChallengeForm
-from .forms import CustomUserCreationForm
+from .forms import ChallengeForm, CustomUserCreationForm, VideoForm
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
+from .models import Videos, VideoWatchers
 
 def index(request):
     return HttpResponse("This is the index page of our app")
@@ -74,3 +74,26 @@ def admin_login(request):
 @login_required
 def userPortal(request):
     return render(request, 'envapp/user_portal.html', {'username': request.user})
+
+@login_required
+def videoList(request):
+    videos = Videos.objects.all()
+    context = {'videos': videos}
+    return render(request, 'envapp/videoList.html', context)
+
+def addVideo(request):
+    if request.method == 'POST': # When form submitted
+        form = VideoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('videos')  # Redirect to the video list page after saving so that the gamekeeper can check it's been added
+    else:
+        form = VideoForm()
+    return render(request, 'envapp/addVideo.html', {'form': form})
+    
+def videoWatchEvent(request, video_id):
+    video = get_object_or_404(Videos, id=video_id)
+    user = request.user
+    user.points += video.videoPoints
+    user.save()
+    return redirect(video.videoLink)
