@@ -6,6 +6,7 @@ from .forms import ChallengeForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return HttpResponse("This is the index page of our app")
@@ -37,7 +38,7 @@ def login_view(request):
             if user.role == 'gamekeeper':
                 return redirect('gamekeeper')  # Redirect to the gamekeeper portal
             else:
-                return redirect('user-portal')  # Redirect to the user portal (create this view as needed)
+                return redirect('userPortal')  # Redirect to the user portal (create this view as needed)
         else:
             messages.error(request, 'Invalid credentials, please try again.')
             return redirect('login')
@@ -69,3 +70,7 @@ def admin_login(request):
     else:
         page = UserCreationForm()
     return render(request, 'envapp/Admin.html', {'page': page})
+
+@login_required
+def userPortal(request):
+    return render(request, 'envapp/user_portal.html', {'username': request.user})
