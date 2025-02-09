@@ -33,7 +33,7 @@ class UserTable(AbstractUser):
         
     # Decreases the points by a specified amount (Unsure of use case yet, perhaps for ADMIN?)
     def subtractPoints(self, pointsLost):
-        self.points += pointsLost
+        self.points -= pointsLost
         self.save()
 
 class Videos(models.Model):
