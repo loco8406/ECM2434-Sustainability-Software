@@ -5,6 +5,7 @@ from django.contrib import messages
 from .forms import ChallengeForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
+from django.views.decorators.cache import never_cache
 
 def index(request):
     return HttpResponse("This is the index page of our app")
@@ -21,7 +22,7 @@ def register(request):
         form = CustomUserCreationForm()  # Display an empty form for GET requests
     return render(request, 'envapp/register.html', {'form': form})
 
-
+@never_cache
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
