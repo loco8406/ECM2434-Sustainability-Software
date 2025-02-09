@@ -37,7 +37,7 @@ def login_view(request):
             if user.role == 'gamekeeper':
                 return redirect('gamekeeper')  # Redirect to the gamekeeper portal
             else:
-                return redirect('user-portal')  # Redirect to the user portal (create this view as needed)
+                return redirect('student_dashboard')  # Redirect to the user portal (create this view as needed)
         else:
             messages.error(request, 'Invalid credentials, please try again.')
             return redirect('login')
@@ -69,3 +69,7 @@ def admin_login(request):
     else:
         page = UserCreationForm()
     return render(request, 'envapp/Admin.html', {'page': page})
+
+
+def student_dashboard(request):
+    return render(request, 'envapp/student_dashboard.html')
