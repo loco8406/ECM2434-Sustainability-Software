@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -6,6 +6,9 @@ from .forms import ChallengeForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
+from .models import ChallengeParticipation, UserTable, Challenge
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 def index(request):
     return HttpResponse("This is the index page of our app")
@@ -73,3 +76,60 @@ def admin_login(request):
 
 def student_dashboard(request):
     return render(request, 'envapp/student_dashboard.html')
+
+def review_submissions(request):
+    submissions = ChallengeParticipation.objects.filter(reviewed=False)
+    return render(request, 'review_submissions.html', {'submissions': submissions})
+
+def mark_reviewed(request):
+    if request.method == 'POST':
+        submission_id = request.POST.get('submission_id')
+        submission = ChallengeParticipation.objects.get(id=submission_id)
+        submission.reviewed = True
+        submission.save()
+
+        # Award points
+        submission.user.points += submission.challenge.points_reward
+        submission.user.save()
+
+    return redirect('review_submissions')
+
+def challenge_list(request):
+    challenges = Challenge.objects.all()
+    return render(request, 'challenges/challenge_list.html', {'challenges': challenges})
+
+@login_required
+def create_challenge(request):
+    if request.user.is_gamekeeper():  # Ensure only Gamekeepers can create
+        if request.method == 'POST':
+            form = ChallengeForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('challenge_list')
+        else:
+            form = ChallengeForm()
+        return render(request, 'challenges/create_challenge.html', {'form': form})
+    else:
+        return redirect('challenge_list')
+        
+@login_required
+def edit_challenge(request, challenge_id):
+    if request.user.is_gamekeeper():
+        challenge = get_object_or_404(Challenge, id=challenge_id)
+        if request.method == 'POST':
+            form = ChallengeForm(request.POST, instance=challenge)
+            if form.is_valid():
+                form.save()
+                return redirect('challenge_list')
+        else:
+            form = ChallengeForm(instance=challenge)
+        return render(request, 'challenges/edit_challenge.html', {'form': form, 'challenge': challenge})
+    else:
+        return redirect('challenge_list')
+
+@login_required
+def delete_challenge(request, challenge_id):
+    if request.user.is_gamekeeper():
+        challenge = get_object_or_404(Challenge, id=challenge_id)
+        challenge.delete()
+    return redirect('challenge_list')

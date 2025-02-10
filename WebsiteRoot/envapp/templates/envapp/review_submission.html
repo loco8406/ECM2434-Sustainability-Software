@@ -1,0 +1,12 @@
+<h2>Student Submissions</h2>
+<ul>
+    {% for submission in submissions %}
+        <li>{{ submission.user.username }} submitted for {{ submission.challenge.title }}: {{ submission.submission }}</li>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="submission_id" value="{{ submission.id }}">
+            <button type="submit">Mark as Reviewed</button>
+        </form>
+    {% endfor %}
+</ul>
+

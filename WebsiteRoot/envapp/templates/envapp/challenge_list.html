@@ -1,0 +1,10 @@
+{% for challenge in challenges %}
+    <h2>{{ challenge.title }}</h2>
+    <p>{{ challenge.description }}</p>
+    <p>Points: {{ challenge.points_reward }}</p>
+    {% if user.is_gamekeeper %}
+        <a href="{% url 'edit_challenge' challenge.id %}">Edit</a>
+        <a href="{% url 'delete_challenge' challenge.id %}">Delete</a>
+    {% endif %}
+{% endfor %}
+<a href="{% url 'create_challenge' %}">Create New Challenge</a>
