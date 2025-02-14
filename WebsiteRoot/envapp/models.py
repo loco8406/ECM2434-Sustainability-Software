@@ -4,9 +4,37 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class UserTable(AbstractUser):
-    # This extends the included User model
-    role = models.CharField(max_length=30)
-    points = models.IntegerField(default=0)
+    # This extends the included User model 
+    role = models.CharField(max_length=30, default='user')  
+    points = models.IntegerField(default=0) # Keeps track of this user's points
+    
+    # Returns the role of the user
+    def getRole(self):
+        return self.role
+    
+    # Returns the number of points
+    def getPoints(self):
+        return self.points
+     
+    # Sets the role of the user
+    def setRole(self, newRole):
+        self.role = newRole
+        self.save()
+        
+    # Overrides the current points value a new one (SHOULD NOT BE USED EXCEPT FOR ADMIN FUNCTIONS, OTHERWISE USE addPoints/subtractPoints)
+    def setPoints(self, newPoints):
+        self.points = newPoints
+        self.save()
+        
+    # Increases the points by a specified amount
+    def addPoints(self, pointsScored):
+        self.points += pointsScored
+        self.save()
+        
+    # Decreases the points by a specified amount (Unsure of use case yet, perhaps for ADMIN?)
+    def subtractPoints(self, pointsLost):
+        self.points -= pointsLost
+        self.save()
 
 class Videos(models.Model):
     #This stores the videos for the eventual video watching task
@@ -19,8 +47,8 @@ class Videos(models.Model):
         return self.videoTitle
 
 class VideoWatchers(models.Model):
-    userID = models.ForeignKey(UserTable, on_delete=models.CASCADE) # Stores the user ID of the user who has watched the video
-    videoID = models.ForeignKey(Videos, on_delete=models.CASCADE) # Stores the video ID of the video that has been watched
+    userID = models.IntegerField() # Stores the user ID of the user who has watched the video
+    videoID = models.IntegerField() # Stores the video ID of the video that has been watched
     watchTime = models.DateTimeField(auto_now_add=True) # Automatically adds the date the video has been watched/clicked
 
 class WaterStation(models.Model):
