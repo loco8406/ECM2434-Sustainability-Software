@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal - Sustainability App</title>
+    <title>Student Portal - Plastic Waste Tracker</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     
     <!-- Google Material Icons -->
@@ -23,12 +23,19 @@
         .material-icons {
             font-size: 28px;
         }
+        .progress-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            background-color: #017849;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar custom-navbar">
         <div class="container d-flex justify-content-between">
-            <a class="navbar-brand text-white" href="#">Sustainability App</a>
+            <a class="navbar-brand text-white" href="#">Plastic Waste Tracker</a>
             <a class="nav-link" href="settings.html">
                 <span class="material-icons">settings</span> <!-- Google Material Icon for Settings -->
             </a>
@@ -37,28 +44,43 @@
 
     <div class="container mt-5">
         <h1 class="text-center">Welcome, Student!</h1>
-        <p class="text-center">Track your sustainability progress and complete tasks to earn points.</p>
-        <h3 class="mt-4">🏆 Your Current Points: <strong>50</strong></h3>
+        <p class="text-center">Track how much plastic waste you're preventing from going into landfills by refilling your reusable bottle.</p>
+        
+        <h3 class="mt-4">🌱 Plastic Waste Prevented: <strong>25 Bottles</strong></h3>
 
-        <h2 class="mt-4">📌 Available Tasks</h2>
+        <!-- Progress Tracker -->
+        <div class="progress-container">
+            <p><strong>Goal: 50 Plastic Bottles Saved</strong></p>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="50"></div>
+            </div>
+        </div>
+
+        <!-- Referral Code Section -->
+        <div class="referral-section mt-4 text-center">
+            <h3>Your Referral Code:</h3>
+            <p id="referral_code">Loading...</p>
+            <button id="generate_code" class="btn btn-success">Generate Referral Code</button>
+        </div>
+
+        
+
+        <h2 class="mt-4">📌 Track Your Refills</h2>
         <ul class="list-group">
-            <li class="list-group-item">Watch a Sustainability Video 🎥 - <button class="btn btn-success btn-sm">Complete Task</button></li>
-            <li class="list-group-item">Use Public Transport 🚌 - <button class="btn btn-success btn-sm">Complete Task</button></li>
-            <li class="list-group-item">Scan a Barcode of a Sustainable Product 🛒 - <button class="btn btn-success btn-sm">Complete Task</button></li>
+            <li class="list-group-item">Refill Your Bottle at a Water Station 💧 - <button class="btn btn-success btn-sm">Log Refill</button></li>
+            <li class="list-group-item">Encourage a Friend to Use a Reusable Bottle 👥 - <button class="btn btn-success btn-sm">Log Action</button></li>
+            <li class="list-group-item">Use a Reusable Cup Instead of a Plastic One ☕ - <button class="btn btn-success btn-sm">Log Action</button></li>
         </ul>
 
-        <h2 class="mt-4">✅ Completed Tasks</h2>
+        <h2 class="mt-4">✅ Completed Actions</h2>
         <ul class="list-group">
-            <li class="list-group-item text-muted">Attended a Sustainability Event 🎉 - Completed</li>
-            <li class="list-group-item text-muted">Answered a Sustainability Quiz 📚 - Completed</li>
+            <li class="list-group-item text-muted">Refilled Bottle at Campus Water Fountain 💧 - Logged</li>
+            <li class="list-group-item text-muted">Used a Metal Straw Instead of Plastic 🥤 - Logged</li>
         </ul>
-
-
     </div>
 
     <footer class="text-center mt-5 py-3 bg-light">
-        <p>© 2025 Sustainability App | Promoting a Green Campus</p>
+        <p>© 2025 Plastic Waste Tracker | Making an Impact, One Bottle at a Time</p>
     </footer>
-
 </body>
 </html>

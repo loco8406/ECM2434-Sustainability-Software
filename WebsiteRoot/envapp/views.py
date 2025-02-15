@@ -6,6 +6,8 @@ from .forms import ChallengeForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return HttpResponse("This is the index page of our app")
@@ -73,3 +75,4 @@ def admin_login(request):
 
 def student_dashboard(request):
     return render(request, 'envapp/student_dashboard.html')
+
