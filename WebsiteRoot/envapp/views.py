@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 from .forms import CustomUserCreationForm, ChallengeForm
-from .models import UserTable, VideoWatchers, Challenge
+from .models import Challenge, UserTable
 
 
 # Login View
@@ -18,7 +19,6 @@ def login_view(request):
         if user is not None:
             login(request, user)
 
-            # Redirect based on user role
             if user.role == 'gamekeeper':
                 return redirect('gamekeeper_dashboard')
             else:
@@ -39,25 +39,61 @@ def logout_view(request):
 # Student Dashboard
 @login_required
 def student_dashboard(request):
-    return render(request, 'envapp/student_dashboard.html')
+    challenges = Challenge.objects.all()
+    return render(request, 'envapp/student_dashboard.html', {'challenges': challenges})
 
 
 # Gamekeeper Dashboard
 @login_required
 def gamekeeper_dashboard(request):
-    if request.method == 'POST':  # If the form is submitted
+    if request.method == 'POST':
         form = ChallengeForm(request.POST)
         if form.is_valid():
             challenge = form.save()
-            challenge_name = form.cleaned_data.get('title')
             messages.success(
-                request, f'Challenge "{challenge_name}" created successfully!')
-            # Redirect to the same page
+                request, f'Challenge "{challenge.title}" created successfully!')
             return redirect('gamekeeper_dashboard')
     else:
-        form = ChallengeForm()  # Empty form for GET request
+        form = ChallengeForm()
 
-    return render(request, 'envapp/gamekeeper_dashboard.html', {'form': form})
+    challenges = Challenge.objects.all().order_by('-created_at')
+    return render(request, 'envapp/gamekeeper_dashboard.html', {'form': form, 'challenges': challenges})
+
+
+# Edit Challenge
+@login_required
+def edit_challenge(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+
+    if request.method == 'POST':
+        form = ChallengeForm(request.POST, instance=challenge)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Challenge updated successfully!")
+            return redirect('gamekeeper_dashboard')
+    else:
+        form = ChallengeForm(instance=challenge)
+
+    return render(request, 'envapp/edit_challenge.html', {'form': form, 'challenge': challenge})
+
+
+# Delete Challenge
+@csrf_exempt  # Only use this if CSRF token isn't passed properly
+def delete_challenge(request, challenge_id):
+    if request.method == "POST":
+        challenge = get_object_or_404(Challenge, id=challenge_id)
+        challenge.delete()
+        return JsonResponse({"message": "Challenge deleted successfully!"}, status=200)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+# Leaderboard
+@login_required
+@login_required
+def leaderboard(request):
+    users = UserTable.objects.filter(role='user').order_by('-points')
+    return render(request, 'envapp/leaderboard.html', {'users': users})
 
 
 # User Registration
@@ -77,44 +113,35 @@ def register(request):
 
 # Settings Page
 def settings_view(request):
-    # Manually check if the user is authenticated
     if not request.user.is_authenticated:
-        return redirect('login')  # Redirect to login if not authenticated
+        return redirect('login')
 
     if request.method == 'POST':
         user = request.user
 
-        # Update display name
         user.first_name = request.POST.get('display_name', user.first_name)
 
-        # Update password if provided
         new_password = request.POST.get('password')
         if new_password:
             user.set_password(new_password)
 
-        user.save()  # Save changes in the database
+        user.save()
         messages.success(request, 'Settings updated successfully!')
 
-        return redirect('settings')  # Reload the settings page after saving
+        return redirect('settings')
 
     return render(request, 'envapp/settings.html')
 
 
+# Delete Account
+@login_required
 def delete_account(request):
-    if not request.user.is_authenticated:
-        return redirect('login')  # Ensure user is logged in
-
     user = request.user
 
-    # ✅ Fix: Use "id" instead of "userID"
-    VideoWatchers.objects.filter(id=user.id).delete()  # Remove watched videos
-    # Remove created challenges (if any)
     Challenge.objects.filter(id=user.id).delete()
 
-    # Finally, delete the user account
     user.delete()
 
-    # Log out the user after account deletion
     logout(request)
     messages.success(request, "Your account has been permanently deleted.")
     return redirect('login')

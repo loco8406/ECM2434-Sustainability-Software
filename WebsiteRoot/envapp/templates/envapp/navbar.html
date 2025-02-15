@@ -1,12 +1,12 @@
 <nav>
     <div>
         <a href="{% url 'student_dashboard' %}">Sustainability</a>
+        <a href="{% url 'leaderboard' %}">Leaderboard</a>
+        <div>
+            <a href="{% url 'settings' %}">
+                <span class="material-icons">settings</span>
+            </a>
+            <a href="{% url 'logout' %}"><button>Logout</button></a>
+        </div>
     </div>
-    <div>
-        <a href="{% url 'settings' %}">
-            <span class="material-icons">settings</span>
-        </a>
-        <a href="{% url 'logout' %}"><button>Logout</button></a>
-    </div>
-
 </nav>
