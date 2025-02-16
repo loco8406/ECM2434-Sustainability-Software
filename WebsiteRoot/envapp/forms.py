@@ -16,6 +16,12 @@ class ChallengeForm(forms.ModelForm):
 
 
 class CustomUserCreationForm(UserCreationForm):
+    input_referral_code = forms.CharField(
+        required=False,
+        max_length=10,
+        label="Referral Code",
+        help_text="Enter a referral code if you have one."
+    )
     class Meta:
         model = UserTable
-        fields = ("username", "password1", "password2", "first_name", "last_name", "email")
+        fields = ("username", "password1", "password2", "first_name", "last_name", "email",)
