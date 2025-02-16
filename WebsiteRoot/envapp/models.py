@@ -52,10 +52,18 @@ class VideoWatchers(models.Model):
     watchTime = models.DateTimeField(auto_now_add=True) # Automatically adds the date the video has been watched/clicked
 
 class WaterStation(models.Model):
-    name = models.CharField(max_length=200)  # Challenge title
-    location_description = models.TextField()  # Challenge details
+    name = models.CharField(max_length=200)
+    location_description = models.TextField()
     location = models.TextField()
     points_reward = models.IntegerField(default=0)
+
+class Challenge(models.Model):
+    title = models.CharField(max_length=200)  # Challenge title
+    description = models.TextField()  # Challenge details
+    location = models.TextField()
+    challenge_date = models.DateTimeField()
+    points_reward = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp when created
 
     def __str__(self):
         return self.title

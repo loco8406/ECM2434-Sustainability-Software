@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import WaterStationForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
+from django.urls import reverse
+import qrcode
+from io import BytesIO
 
 def index(request):
     return HttpResponse("This is the index page of our app")
@@ -52,7 +55,7 @@ def gamekeeper(request):
             WaterStation = waterStationForm.save()  # Save and store the challenge instance
             waterStation_name = waterStationForm.cleaned_data.get('name')  # Get the title field
             messages.success(request, f'Water Station "{waterStation_name}" created successfully!')
-            return redirect('gamekeeper')  # Redirect to the same page or another view
+            return HttpResponseRedirect(reverse('generate_qr') + f'?data={waterStation_name}')  # Redirect to the same page or another view
     else:
         form = WaterStationForm()  # Empty form for GET request
 
@@ -74,3 +77,19 @@ def admin_login(request):
 
 def student_dashboard(request):
     return render(request, 'envapp/student_dashboard.html')
+
+def generate_qr(request,):
+    data = request.GET.get('data', 'https://www.example.com')  # Default to 'https://www.example.com'
+    qr = qrcode.QRCode(
+        version = 1,
+        error_correction = qrcode.constants.ERROR_CORRECT_L,
+        box_size = 10,
+        border =4
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image()
+    buffer = BytesIO()
+    img.save(buffer,format = "PNG")
+    buffer.seek(0)
+    return HttpResponse(buffer.getvalue(), content_type='image/png')
