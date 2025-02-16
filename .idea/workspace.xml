@@ -4,26 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01547330-a40d-4fdf-a8be-17952d2b45aa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/db.sqlite3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0002_usertable_bottles_saved_usertable_referral_code_and_more.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0003_alter_usertable_referral_code.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0004_alter_usertable_referral_code.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0005_alter_usertable_referral_code.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0006_remove_usertable_bottles_saved_and_more.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/edit_challenge.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/gamekeeper_dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/leaderboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/Admin.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/gamekeeper.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/student_dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/student_dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="01547330-a40d-4fdf-a8be-17952d2b45aa" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -71,7 +52,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
-    "git-widget-placeholder": "Merging hugo",
+    "git-widget-placeholder": "hugo",
     "last_opened_file_path": "C:/Users/hugor/_year 2/Term 2/Test/ECM2434-Sustainability-Software/WebsiteRoot",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
