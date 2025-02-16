@@ -5,10 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="01547330-a40d-4fdf-a8be-17952d2b45aa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/ECM2434/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/ECM2434/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/ECM2434/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/ECM2434/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/db.sqlite3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0002_usertable_bottles_saved_usertable_referral_code_and_more.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0003_alter_usertable_referral_code.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0004_alter_usertable_referral_code.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0005_alter_usertable_referral_code.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/migrations/0006_remove_usertable_bottles_saved_and_more.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/edit_challenge.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/gamekeeper_dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/leaderboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/Admin.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/gamekeeper.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/student_dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/templates/envapp/student_dashboard.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebsiteRoot/envapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebsiteRoot/envapp/views.py" afterDir="false" />
     </list>
@@ -59,14 +71,14 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
-    "git-widget-placeholder": "Hugo",
+    "git-widget-placeholder": "Merging hugo",
     "last_opened_file_path": "C:/Users/hugor/_year 2/Term 2/Test/ECM2434-Sustainability-Software/WebsiteRoot",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "terminal",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -99,6 +111,7 @@
       <workItem from="1739700634195" duration="206000" />
       <workItem from="1739700869133" duration="216000" />
       <workItem from="1739701130005" duration="3941000" />
+      <workItem from="1739718515173" duration="1795000" />
     </task>
     <servers />
   </component>

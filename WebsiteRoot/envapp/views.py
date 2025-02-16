@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import WaterStationForm
@@ -9,6 +9,7 @@ from django.views.decorators.cache import never_cache
 from django.urls import reverse
 import qrcode
 from io import BytesIO
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return HttpResponse("This is the index page of our app")
@@ -50,7 +51,6 @@ def login_view(request):
 def gamekeeper(request):
     if request.method == 'POST':  # If the form is submitted
         waterStationForm = WaterStationForm(request.POST)
-
         if waterStationForm.is_valid():
             WaterStation = waterStationForm.save()  # Save and store the challenge instance
             waterStation_name = waterStationForm.cleaned_data.get('name')  # Get the title field
@@ -58,8 +58,7 @@ def gamekeeper(request):
             return HttpResponseRedirect(reverse('generate_qr') + f'?data={waterStation_name}')  # Redirect to the same page or another view
     else:
         form = WaterStationForm()  # Empty form for GET request
-
-    return render(request, 'envapp/gamekeeper.html', {'form': form})
+    return render(request, 'envapp/gamekeeper_dashboard.html', {'form': form})
 
 
 def admin_login(request):
@@ -77,8 +76,7 @@ def admin_login(request):
 
 def student_dashboard(request):
     return render(request, 'envapp/student_dashboard.html')
-
-def generate_qr(request,):
+def generate_qr(request):
     data = request.GET.get('data', 'https://www.example.com')  # Default to 'https://www.example.com'
     qr = qrcode.QRCode(
         version = 1,
