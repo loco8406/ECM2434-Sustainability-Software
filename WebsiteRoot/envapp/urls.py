@@ -1,6 +1,8 @@
 from django.urls import path
 
 from . import views
+from .views import generate_qr
+
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -10,4 +12,6 @@ urlpatterns = [
     path('Admin/', views.admin_login, name = 'Admin'), # Admin login
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),  # Add this line
     path('fetch_referral/', views.fetch_referral, name='fetch_referral'),  # New endpoint
+    path('generate_qr/', generate_qr, name='generate_qr'),
+
 ]

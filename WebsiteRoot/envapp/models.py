@@ -78,3 +78,9 @@ class Challenge(models.Model):
 
     def __str__(self):
         return self.title
+
+class WaterStation(models.Model):
+    name = models.CharField(max_length=200)
+    location_description = models.TextField()
+    location = models.TextField()
+    points_reward = models.IntegerField(default=0)

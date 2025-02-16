@@ -1,5 +1,5 @@
 from django import forms
-from .models import Challenge
+from .models import Challenge, WaterStation
 from django.contrib.auth.forms import UserCreationForm
 from .models import UserTable
 
@@ -12,6 +12,10 @@ class ChallengeForm(forms.ModelForm):
     challenge_date = forms.DateTimeField(
 
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+class WaterStationForm(forms.ModelForm):
+    class Meta:
+        model = WaterStation
+        fields = ['name', 'location_description', 'location', "points_reward"]
 
 
 

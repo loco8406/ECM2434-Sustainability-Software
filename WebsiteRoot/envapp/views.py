@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .forms import ChallengeForm
+from .forms import ChallengeForm,WaterStationForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
@@ -10,7 +10,9 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
 from .models import UserTable
-
+from django.urls import reverse
+import qrcode
+from io import BytesIO
 
 def index(request):
     return HttpResponse("This is the index page of our app")
@@ -73,16 +75,22 @@ def login_view(request):
 
 def gamekeeper(request):
     if request.method == 'POST':  # If the form is submitted
-        form = ChallengeForm(request.POST)
-        if form.is_valid():
-            challenge = form.save()  # Save and store the challenge instance
-            challenge_name = form.cleaned_data.get('title')  # Get the title field
+        challengeForm = ChallengeForm(request.POST)
+        waterStationForm = WaterStationForm(request, request.POST)
+        if challengeForm.is_valid():
+            challenge = challengeForm.save()  # Save and store the challenge instance
+            challenge_name = challengeForm.cleaned_data.get('title')  # Get the title field
             messages.success(request, f'Challenge "{challenge_name}" created successfully!')
             return redirect('gamekeeper')  # Redirect to the same page or another view
+        elif waterStationForm.is_valid():
+            waterStation = challengeForm.save()  # Save and store the challenge instance
+            waterStation_nane = challengeForm.cleaned_data.get('title')  # Get the title field
+            messages.success(request, f'Challenge "{waterStation_nane}" created successfully!')
+            return redirect('generate_qr')
+
     else:
         form = ChallengeForm()  # Empty form for GET request
-
-    return render(request, 'envapp/gamekeeper.html', {'form': form})
+        return render(request, 'envapp/gamekeeper_dashboard.html', {'form': form})
 
 
 def admin_login(request):
@@ -121,3 +129,18 @@ def fetch_referral(request):
         return JsonResponse({'referral_code': code})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
+def generate_qr(request):
+    data = request.GET.get('data', 'https://www.example.com')  # Default to 'https://www.example.com'
+    qr = qrcode.QRCode(
+        version = 1,
+        error_correction = qrcode.constants.ERROR_CORRECT_L,
+        box_size = 10,
+        border =4
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image()
+    buffer = BytesIO()
+    img.save(buffer,format = "PNG")
+    buffer.seek(0)
+    return HttpResponse(buffer.getvalue(), content_type='image/png')
