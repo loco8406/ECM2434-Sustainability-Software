@@ -91,3 +91,6 @@ def generate_qr(request):
     img.save(buffer,format = "PNG")
     buffer.seek(0)
     return HttpResponse(buffer.getvalue(), content_type='image/png')
+
+def scanQR(request):
+    return render(request, 'envapp/scanqr.html')

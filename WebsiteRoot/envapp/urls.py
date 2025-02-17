@@ -10,4 +10,5 @@ urlpatterns = [
     path('Admin/', views.admin_login, name = 'Admin'), # Admin login
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),  # Add this line
     path('generate_qr/', generate_qr, name='generate_qr'),
+    path('scanqr/', views.scanQR, name='scanQR'),
 ]
