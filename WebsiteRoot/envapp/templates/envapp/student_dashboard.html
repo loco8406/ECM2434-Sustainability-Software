@@ -1,36 +1,18 @@
+{% include 'envapp/navbar.html' %}
+{% load static %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Portal - Plastic Waste Tracker</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  
   <!-- Google Material Icons -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-  <style>
-    .custom-navbar {
-      background-color: #017849 !important; /* Custom Green Navbar */
-    }
-    .nav-link {
-      color: white !important;
-      padding: 10px 15px;
-    }
-    .nav-item {
-      margin-right: 20px; /* Adjust spacing */
-    }
-    .material-icons {
-      font-size: 28px;
-    }
-    /* Removed text-align: center; */
-    .progress-container {
-      margin: 20px 0;
-    }
-    .progress-bar {
-      background-color: #017849;
-    }
-  </style>
 
   <script>
     function getCookie(name) {
@@ -49,6 +31,7 @@
     }
   </script>
 </head>
+
 <body>
   <nav class="navbar custom-navbar">
     <div class="container d-flex justify-content-between">
@@ -63,26 +46,22 @@
     <!-- Removed text-center classes -->
     <h1>Welcome, {{ user.username }}!</h1>
     <p>Track how much plastic waste you're preventing from going into landfills by refilling your reusable bottle.</p>
-    
+
     <h3 class="mt-4">
-        🌱 Plastic Waste Prevented: <strong>{{ user.points }} Points</strong>
-      </h3>
-  
-      <!-- Progress Tracker -->
-      <div class="progress-container">
-        <p class="text-muted">Progress to next level: {{ user.points }}/{{ level_goal }} points</p>
-        <div class="progress">
-          <div class="progress-bar" 
-               role="progressbar" 
-               style="width: {{ progress_percentage }}%" 
-               aria-valuenow="{{ user.points }}" 
-               aria-valuemin="0" 
-               aria-valuemax="{{ level_goal }}">
-            {{ progress_percentage }}%
-          </div>
+      🌱 Plastic Waste Prevented: <strong>{{ user.points }} Points</strong>
+    </h3>
+
+    <!-- Progress Tracker -->
+    <div class="progress-container">
+      <p class="text-muted">Progress to next level: {{ user.points }}/{{ level_goal }} points</p>
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%"
+          aria-valuenow="{{ user.points }}" aria-valuemin="0" aria-valuemax="{{ level_goal }}">
+          {{ progress_percentage }}%
         </div>
       </div>
-    
+    </div>
+
 
     <h2 class="mt-4">📌 Track Your Refills</h2>
     <ul class="list-group">
@@ -115,12 +94,12 @@
   <footer class="text-center mt-5 py-3 bg-light">
     <p>© 2025 Plastic Waste Tracker | Making an Impact, One Bottle at a Time</p>
   </footer>
-      
+
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const generateButton = document.getElementById('getCode');
       if (generateButton) {
-        generateButton.addEventListener('click', function() {
+        generateButton.addEventListener('click', function () {
           fetch("{% url 'fetch_referral' %}", {
             method: 'POST',
             headers: {
@@ -129,21 +108,23 @@
             },
             body: JSON.stringify({})
           })
-          .then(response => response.json())
-          .then(data => {
-            if(data.referral_code){
-              document.getElementById('referral_code').innerText = data.referral_code;
-              generateButton.style.display = 'none';
-            } else if(data.error) {
-              alert("Error: " + data.error);
-            }
-          })
-          .catch(error => {
-            console.error("Error generating referral code:", error);
-          });
+            .then(response => response.json())
+            .then(data => {
+              if (data.referral_code) {
+                document.getElementById('referral_code').innerText = data.referral_code;
+                generateButton.style.display = 'none';
+              } else if (data.error) {
+                alert("Error: " + data.error);
+              }
+            })
+            .catch(error => {
+              console.error("Error generating referral code:", error);
+            });
         });
       }
     });
   </script>
 </body>
+
 </html>
+{% endblock %}
