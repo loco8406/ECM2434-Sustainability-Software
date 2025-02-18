@@ -1,0 +1,122 @@
+{% include 'envapp/navbar.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Sustainability App</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Google Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        .custom-navbar {
+            background-color: #017849 !important;
+            /* Custom Green Navbar */
+        }
+
+        .nav-link {
+            color: white !important;
+            padding: 10px 15px;
+        }
+
+        .nav-item {
+            margin-right: 20px;
+            /* Adjust spacing */
+        }
+
+        .material-icons {
+            font-size: 28px;
+        }
+
+        /* Blue glow effect on hover */
+        #email:hover {
+            border-color: #007bff !important;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.75);
+        }
+
+        /* Tooltip styling */
+        .tooltip-box {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+    </style>
+    <script>
+        function showTooltip() {
+            document.getElementById("tooltip").style.display = "block";
+        }
+
+        function hideTooltip() {
+            document.getElementById("tooltip").style.display = "none";
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar custom-navbar">
+        <div class="container d-flex justify-content-between">
+            <a class="navbar-brand text-white" href="student_dashboard.html">Sustainability App</a>
+            <a class="nav-link" href="settings.html">
+                <span class="material-icons">settings</span> <!-- Google Material Icon for Settings -->
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Settings</h1>
+        <p class="text-center">Update your personal settings.</p>
+
+        <form class="mt-4 position-relative">
+            <!-- Display Name (Editable) -->
+            <div class="mb-3">
+                <label for="display-name" class="form-label">Display Name</label>
+                <input type="text" class="form-control" id="display-name" value="Student123">
+            </div>
+
+            <!-- Email (Read-Only with Tooltip) -->
+            <div class="mb-3 position-relative">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" value="student@example.com" readonly
+                    onmouseover="showTooltip()" onmouseout="hideTooltip()">
+                <div id="tooltip" class="tooltip-box" style="top: 40px; left: 10px;">
+                    You cannot change your email.
+                </div>
+            </div>
+
+            <!-- Password Change (Optional) -->
+            <div class="mb-3">
+                <label for="password" class="form-label">New Password (Optional)</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter new password">
+            </div>
+
+            <!-- Profile Picture Upload -->
+            <div class="mb-3">
+                <label for="avatar" class="form-label">Profile Picture</label>
+                <input type="file" class="form-control" id="avatar">
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Save Changes</button>
+                <a href="student_dashboard.html" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <footer class="text-center mt-5 py-3 bg-light">
+        <p>© 2025 Sustainability App | Promoting a Green Campus</p>
+    </footer>
+
+</body>
+
+</html>
+{% endblock %}
