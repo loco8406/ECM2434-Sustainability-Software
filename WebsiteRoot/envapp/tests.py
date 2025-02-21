@@ -11,7 +11,7 @@ class UserTableTests(TestCase):
         self.assertEqual(self.user.getRole(), 'student')
 
     def test_get_points(self):
-        self.assertEqual(self.user.getPoints(), 100)
+        self.assertEqual(self.user.getPoints(), 0) # Ensure points default to 0 at creation
 
     def test_set_role(self):
         self.user.setRole('gamekeeper')
@@ -23,9 +23,10 @@ class UserTableTests(TestCase):
 
     def test_add_points(self):
         self.user.addPoints(50)
-        self.assertEqual(self.user.getPoints(), 150)
+        self.assertEqual(self.user.getPoints(), 50)
 
     def test_subtract_points(self):
+        self.user.setPoints(100)
         self.user.subtractPoints(20)
         self.assertEqual(self.user.getPoints(), 80)
 
