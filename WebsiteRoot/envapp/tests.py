@@ -5,17 +5,17 @@ from .models import UserTable, Videos, VideoWatchers, WaterStation, Challenge
 class UserTableTests(TestCase):
 
     def setUp(self):
-        self.user = UserTable.objects.create(username='testuser', role='admin', points=100)
+        self.user = UserTable.objects.create(username='testUser', role='student')
     
     def test_get_role(self):
-        self.assertEqual(self.user.getRole(), 'admin')
+        self.assertEqual(self.user.getRole(), 'student')
 
     def test_get_points(self):
         self.assertEqual(self.user.getPoints(), 100)
 
     def test_set_role(self):
-        self.user.setRole('superadmin')
-        self.assertEqual(self.user.getRole(), 'superadmin')
+        self.user.setRole('gamekeeper')
+        self.assertEqual(self.user.getRole(), 'gamekeeper')
 
     def test_set_points(self):
         self.user.setPoints(150)
