@@ -68,6 +68,12 @@ class VideoWatchers(models.Model):
     videoID = models.IntegerField() # Stores the video ID of the video that has been watched
     watchTime = models.DateTimeField(auto_now_add=True) # Automatically adds the date the video has been watched/clicked
 
+class WaterStation(models.Model):
+    name = models.CharField(max_length=200)
+    location_description = models.TextField()
+    location = models.TextField()
+    points_reward = models.IntegerField(default=0)
+
 class Challenge(models.Model):
     title = models.CharField(max_length=200)  # Challenge title
     description = models.TextField()  # Challenge details

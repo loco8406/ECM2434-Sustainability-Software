@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .forms import ChallengeForm,WaterStationForm
-from .forms import CustomUserCreationForm
+from .forms import ChallengeForm,WaterStationForm,CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
-from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
-from .models import UserTable, Location
+from .models import UserTable
 from django.urls import reverse
 import qrcode
 from io import BytesIO
@@ -73,24 +71,33 @@ def login_view(request):
     
     return render(request, 'envapp/login.html')
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import ChallengeForm, WaterStationForm
+
 def gamekeeper(request):
     if request.method == 'POST':  # If the form is submitted
         challengeForm = ChallengeForm(request.POST)
-        waterStationForm = WaterStationForm(request, request.POST)
+        waterStationForm = WaterStationForm(request.POST)
+
         if challengeForm.is_valid():
             challenge = challengeForm.save()  # Save and store the challenge instance
             challenge_name = challengeForm.cleaned_data.get('title')  # Get the title field
             messages.success(request, f'Challenge "{challenge_name}" created successfully!')
             return redirect('gamekeeper')  # Redirect to the same page or another view
+
         elif waterStationForm.is_valid():
-            waterStation = challengeForm.save()  # Save and store the challenge instance
-            waterStation_nane = challengeForm.cleaned_data.get('title')  # Get the title field
-            messages.success(request, f'Challenge "{waterStation_nane}" created successfully!')
-            return redirect('generate_qr')
+            waterStation = waterStationForm.save()  # Save and store the waterstation instance
+            waterStation_name = waterStationForm.cleaned_data.get('name')  # Get the name field (or other relevant field)
+            messages.success(request, f'Waterstation "{waterStation_name}" created successfully!')
+            return redirect('generate_qr')  # Redirect to another page for the QR generation or confirmation
 
     else:
-        form = ChallengeForm()  # Empty form for GET request
-        return render(request, 'envapp/gamekeeper_dashboard.html', {'form': form})
+        # Empty forms for GET request
+        challengeForm = ChallengeForm()
+        waterStationForm = WaterStationForm()
+
+    return render(request, 'envapp/gamekeeper_dashboard.html', {'challengeForm': challengeForm, 'waterStationForm': waterStationForm})
 
 
 def admin_login(request):
@@ -119,7 +126,6 @@ def student_dashboard(request):
     }
     return render(request, 'envapp/student_dashboard.html', context)
 
-
 @login_required
 def fetch_referral(request):
     if request.method == 'POST':
@@ -145,28 +151,4 @@ def generate_qr(request):
     buffer.seek(0)
     return HttpResponse(buffer.getvalue(), content_type='image/png')
 
-def readonly_map(request):
-    locations = Location.objects.all()
-    return render(request, 'map_app/readonly_map.html', {"locations": locations})
-
-def get_locations(request):
-    locations = list(Location.objects.values("name", "latitude", "longitude"))
-    return JsonResponse({"locations": locations})
-
-def gamekeeper_map(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        latitude = request.POST.get("latitude")
-        longitude = request.POST.get("longitude")
-
-        if name and latitude and longitude:
-            location = Location.objects.create(name=name, latitude=latitude, longitude=longitude)
-            return JsonResponse({"message": "Location saved!", "id": location.id})
-    
-    locations = Location.objects.all()
-    return render(request, 'map_app/gamekeeper_map.html', {"locations": locations})
-
-def get_locations(request):
-    locations = list(Location.objects.values("name", "latitude", "longitude"))
-    return JsonResponse({"locations": locations})
 

@@ -1,7 +1,6 @@
 from django import forms
-from .models import Challenge, WaterStation
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserTable
+from .models import UserTable, WaterStation,Challenge
 
 
 class ChallengeForm(forms.ModelForm):
@@ -15,8 +14,8 @@ class ChallengeForm(forms.ModelForm):
 class WaterStationForm(forms.ModelForm):
     class Meta:
         model = WaterStation
-        fields = ['name', 'location_description', 'location', "points_reward"]
 
+        fields = ['name', 'location_description', 'location', "points_reward"]
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -28,4 +27,4 @@ class CustomUserCreationForm(UserCreationForm):
     )
     class Meta:
         model = UserTable
-        fields = ("username", "password1", "password2", "first_name", "last_name", "email",)
+        fields = ["username", "password1", "password2", "first_name", "last_name", "email",]
