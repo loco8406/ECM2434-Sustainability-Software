@@ -2,13 +2,19 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
 import random
+import string 
 
 # Create your models here.
+
+def generate_code(length=8):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 class UserTable(AbstractUser):
     # This extends the included User model 
     role = models.CharField(max_length=30, default='user')  
     points = models.IntegerField(default=0) # Keeps track of this user's points
+    referral_code = models.CharField(max_length=10, blank=True, null=True, unique=True)
+
     
     # Returns the role of the user
     def getRole(self):
@@ -37,6 +43,15 @@ class UserTable(AbstractUser):
     def subtractPoints(self, pointsLost):
         self.points -= pointsLost
         self.save()
+
+    def getCode(self):
+        """Generate and save a referral code if one does not already exist."""
+        if not self.referral_code:
+            self.referral_code = generate_code()
+            self.save()
+        return self.referral_code
+    
+
 
 class Videos(models.Model):
     #This stores the videos for the eventual video watching task
@@ -69,3 +84,9 @@ class Challenge(models.Model):
 
     def __str__(self):
         return self.title
+
+class WaterStation(models.Model):
+    name = models.CharField(max_length=200)
+    location_description = models.TextField()
+    location = models.TextField()
+    points_reward = models.IntegerField(default=0)
