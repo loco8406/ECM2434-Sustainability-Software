@@ -12,8 +12,9 @@
 
     <script>
         function onScanSuccess(decodedText, decodedResult) {
-			// Output the content of the qr code for testing purposes
-            document.getElementById('qrContents').innerText = decodedText;
+			// Redirect to URL, passing the station retrieved from the decoded qr code.
+			window.location.href = "http://localhost:8000/scannedStation/" + decodedText // THIS NEEDS TO BE CHANGED AT A LATER DATE!!! Set to localhost for testing purposes ONLY!
+			console.log("Scanned: " + decodedText)
         }
 
         function onScanError(errorMessage) {
@@ -21,10 +22,9 @@
             console.warn(`Code scan error = ${error}`);
 		}
 
-		// S
        let html5QrCode = new Html5Qrcode("reader");
         html5QrCode.start(
-            { facingMode: "environment" }, // This specifies the rear facing camera as a preference (user refers to the front-facing camera)
+            { facingMode: "environment" }, // This specifies the rear facing camera as a preference ('user' refers to the front-facing camera)
             {
                 fps: 10,    // Frames per second (may adjust if necessary)
                 qrbox: {width: 250, height: 250}  // Size and dimensions of the viewfinder

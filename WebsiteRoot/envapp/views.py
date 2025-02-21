@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import WaterStationForm
 from .forms import CustomUserCreationForm
+from .models import WaterStation
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
 from django.urls import reverse
@@ -52,10 +53,10 @@ def gamekeeper(request):
     if request.method == 'POST':  # If the form is submitted
         waterStationForm = WaterStationForm(request.POST)
         if waterStationForm.is_valid():
-            WaterStation = waterStationForm.save()  # Save and store the challenge instance
-            waterStation_name = waterStationForm.cleaned_data.get('name')  # Get the title field
-            messages.success(request, f'Water Station "{waterStation_name}" created successfully!')
-            return HttpResponseRedirect(reverse('generate_qr') + f'?data={waterStation_name}')  # Redirect to the same page or another view
+            waterStation = waterStationForm.save()  # Save and store the challenge instance
+            waterStation_id = waterStation.id # Get Water Station ID.
+            messages.success(request, f'Water Station "{waterStation_id}" created successfully!')
+            return HttpResponseRedirect(reverse('generate_qr') + f'?data={waterStation_id}')  # Redirect to the same page or another view
     else:
         form = WaterStationForm()  # Empty form for GET request
     return render(request, 'envapp/gamekeeper_dashboard.html', {'form': form})
@@ -92,5 +93,15 @@ def generate_qr(request):
     buffer.seek(0)
     return HttpResponse(buffer.getvalue(), content_type='image/png')
 
+# Load Scan QR page
+@login_required
 def scanQR(request):
     return render(request, 'envapp/scanqr.html')
+    
+# View for scanning a QR Code
+def stationScanEvent(request, station_id):
+    station = get_object_or_404(WaterStation, id=station_id) # Get the station that was scanned
+    user = request.user # Get the current User
+    user.points += station.points_reward # Add points from station to user
+    user.save() # Save user
+    return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal

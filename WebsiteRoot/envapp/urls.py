@@ -11,4 +11,5 @@ urlpatterns = [
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),  # Add this line
     path('generate_qr/', generate_qr, name='generate_qr'),
     path('scanqr/', views.scanQR, name='scanQR'),
+    path('scannedStation/<int:station_id>/', views.stationScanEvent, name='scannedStation'),
 ]
