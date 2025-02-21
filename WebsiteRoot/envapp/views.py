@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .forms import ChallengeForm,WaterStationForm
-from .forms import CustomUserCreationForm
+from .forms import ChallengeForm,WaterStationForm,CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
@@ -151,4 +150,5 @@ def generate_qr(request):
     img.save(buffer,format = "PNG")
     buffer.seek(0)
     return HttpResponse(buffer.getvalue(), content_type='image/png')
+
 
