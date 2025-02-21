@@ -11,7 +11,6 @@
   <title>Student Portal - Plastic Waste Tracker</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <!-- Google Material Icons -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <script>
@@ -33,15 +32,6 @@
 </head>
 
 <body>
-  <nav class="navbar custom-navbar">
-    <div class="container d-flex justify-content-between">
-      <a class="navbar-brand text-white" href="#">Plastic Waste Tracker</a>
-      <a class="nav-link" href="settings.html">
-        <span class="material-icons">settings</span>
-      </a>
-    </div>
-  </nav>
-
   <div class="container mt-5">
     <!-- Removed text-center classes -->
     <h1>Welcome, {{ user.username }}!</h1>
