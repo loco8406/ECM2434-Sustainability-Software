@@ -15,6 +15,10 @@ import qrcode
 
 ### LOGIN SYSTEM VIEWS
 
+# Home Page
+def home(request):
+    return render(request, 'envapp/home.html')
+
 # User Registration
 def register(request):
     if request.method == 'POST':

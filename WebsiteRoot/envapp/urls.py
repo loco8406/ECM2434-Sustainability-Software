@@ -5,6 +5,10 @@ from .views import generate_qr
 
 
 urlpatterns = [
+
+    #HOME PAGE URL
+    path('home/', views.home, name='home'),
+    
     # LOGIN SYSTEM URLS
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
