@@ -57,7 +57,7 @@
     <ul class="list-group">
       <li class="list-group-item">
         Refill Your Bottle at a Water Station 💧 -
-        <button class="btn btn-success btn-sm">Log Refill</button>
+        <button onclick = "goToScanPage()" class="btn btn-success btn-sm">Log Refill</button>
       </li>
       <li class="list-group-item">
         Encourage a Friend to Use a Reusable Bottle 👥 -
@@ -86,6 +86,10 @@
   </footer>
 
   <script>
+	function goToScanPage(){
+		document.location.href = "{% url 'scanQR' %}"
+	}
+   
     document.addEventListener('DOMContentLoaded', function () {
       const generateButton = document.getElementById('getCode');
       if (generateButton) {

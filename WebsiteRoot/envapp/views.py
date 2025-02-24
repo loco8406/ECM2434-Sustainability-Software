@@ -212,6 +212,7 @@ def fetch_referral(request):
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
+### QR CODE GENERATION VIEW
 
 def generate_qr(request):
     # Default to 'https://www.example.com'
@@ -229,3 +230,18 @@ def generate_qr(request):
     img.save(buffer, format="PNG")
     buffer.seek(0)
     return HttpResponse(buffer.getvalue(), content_type='image/png')
+
+#### QR CODE SCANNING VIEWS
+
+# Load Scan QR page
+@login_required
+def scanQR(request):
+    return render(request, 'envapp/scanqr.html')
+    
+# View for scanning a QR Code
+def stationScanEvent(request, station_id):
+    station = get_object_or_404(WaterStation, id=station_id) # Get the station that was scanned
+    user = request.user # Get the current User
+    user.points += station.points_reward # Add points from station to user
+    user.save() # Save user
+    return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal

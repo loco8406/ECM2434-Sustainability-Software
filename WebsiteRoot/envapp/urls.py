@@ -20,7 +20,16 @@ urlpatterns = [
     path("leaderboard/", views.leaderboard, name="leaderboard"),
     path('fetch_referral/', views.fetch_referral,
          name='fetch_referral'),  # New endpoint
+    
+    # GENERATE QR CODE URLS
     path('generate_qr/', generate_qr, name='generate_qr'),
+    
+    # SCAN QR CODE URLS
+    path('scanqr/', views.scanQR, name='scanQR'),
+    path('scannedStation/<int:station_id>/', views.stationScanEvent, name='scannedStation'),
+    
+    # UNUSED/UNIMPLEMENTED URLS
+    
     # path('read_only-map/', readonly_map, name='read_only_map'),
     # path('gamekeeper-map/', gamekeeper_map, name='gamekeeper_map'),
     # path('get-locations/', get_locations, name='get_locations'),
