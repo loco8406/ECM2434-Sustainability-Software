@@ -175,11 +175,9 @@ def gamekeeper_dashboard(request):
 
         elif waterStationForm.is_valid(): #Handles waterstation form if submited
             # Save and store the waterstation instance
-            waterStation = waterStationForm.save()
-            waterStation_name = waterStationForm.cleaned_data.get(
-                'name')  # Get the name field for success message
-            messages.success(
-                request, f'Waterstation "{waterStation_name}" created successfully!')
+            waterStation = waterStationForm.save()  # Save and store the challenge instance
+            waterStation_id = waterStation.id # Get Water Station ID.
+            messages.success(request, f'Water Station "{waterStation_id}" created successfully!')
             # Redirect to another page for the QR generation or confirmation
             return redirect('generate_qr')
 
