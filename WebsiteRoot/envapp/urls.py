@@ -7,7 +7,7 @@ from .views import generate_qr
 urlpatterns = [
 
     #HOME PAGE URL
-    path('home/', views.home, name='home'),
+    path('', views.home, name='home'),
     
     # LOGIN SYSTEM URLS
     path('login/', views.login_view, name='login'),
@@ -44,6 +44,6 @@ urlpatterns = [
      #Map URLs
     
     path ('gamekeeper_map/', views.gamekeeper_map, name='gamekeeper_map'),
-    path('', views.map_view, name='map'),  # Main page with map
+    path('map/', views.map_view, name='map'),  # Main page with map
 
 ]
