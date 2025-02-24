@@ -2,15 +2,13 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import UserTable, WaterStation,Challenge
 
-
+#Form for challenges created by the Gamekeeper
 class ChallengeForm(forms.ModelForm):
     class Meta:
         model = Challenge
         fields = ['title', 'description', 'location', 'challenge_date', "points_reward"]  # Fields shown in the form
 
-    challenge_date = forms.DateTimeField(
-
-        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+#Form for Water station created by the Gamekeeper
 class WaterStationForm(forms.ModelForm):
     class Meta:
         model = WaterStation

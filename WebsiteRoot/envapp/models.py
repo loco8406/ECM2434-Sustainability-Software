@@ -9,7 +9,7 @@ import string
 def generate_code(length=8):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
-
+#Creation of the challenge model
 class Challenge(models.Model):
     title = models.CharField(max_length=200)  # Challenge title
     description = models.TextField()  # Challenge details
