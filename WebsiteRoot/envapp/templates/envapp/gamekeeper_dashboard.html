@@ -29,27 +29,37 @@
         </div>
         {% endif %}
 
-        <!-- Create New Challenge -->
-        <div>
-            <div>
-                <h4>Create a New Challenge</h4>
-            </div>
-            <div>
+
+
+        <div style="display: flex; gap: 20px;">
+            <div class = form-container>
+                <h4>Create a New Water Station</h4>
                 <form method="POST">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit">Create Challenge</button>
+                    {{ waterStationForm.as_p }}
+                    <button type="submit" class = btn-primary>Create Water Station</button>
                 </form>
+                <p class="redirect-link">
+                    View map here: <a href="{% url 'gamekeeper_map' %}" class="register-link">Map here</a>
+                </p>
             </div>
-        </div>
 
-        <!-- Manage Existing Challenges -->
+            <div class = form-container>
+                <h4>Create a New Challenge</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ challengeForm.as_p }}
+                    <button type="submit" class = btn-primary>Create Challenge</button>
+                </form>
+
+            </div>
+
         <div>
             <div>
                 <h4>Manage Existing Challenges</h4>
             </div>
             <div>
-                {% if challenges %}
+
                 <table>
                     <thead>
                         <tr>
@@ -81,11 +91,9 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% else %}
-                <p>No challenges found.</p>
-                {% endif %}
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Bootstrap Modal -->
