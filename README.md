@@ -1,6 +1,6 @@
 # ECM2434-Sustainability-Software
 
-## {!} Important Information {!}
+## ! Important Information !
 This project is currently in the prototyping phase and the current state of the application may not accurately represent its final iteration. Subject to change.\
 As a result, only the following basic functionality is included at this time:\
 -Login/Registration System\
@@ -8,7 +8,7 @@ As a result, only the following basic functionality is included at this time:\
 -Points Tallying\
 -Leaderboard Tracking\
 -Water Station Generation Gamekeepers\
--Water Station Scanning/Point accumulation\
+-Water Station Scanning/Point accumulation
 
 While we have made efforts to make the experience stable enough for basic usage, please expect bugs and errors.
 
