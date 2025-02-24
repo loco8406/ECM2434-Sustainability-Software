@@ -1,6 +1,20 @@
-# ECM2434-Sustainability-Software-
+# ECM2434-Sustainability-Software
 
-## Prerequisites
+## {!} Important Information {!}
+This project is currently in the prototyping phase and the current state of the application may not accurately represent its final iteration. Subject to change.\
+As a result, only the following basic functionality is included at this time:\
+-Login/Registration System\
+-Referral System\
+-Points Tallying\
+-Leaderboard Tracking\
+-Water Station Generation Gamekeepers\
+-Water Station Scanning/Point accumulation\
+
+While we have made efforts to make the experience stable enough for basic usage, please expect bugs and errors.
+
+## How to Run
+
+### Prerequisites
 Please ensure that you have the correct version of Python installed.\
 Python Version: **3.10.11**
 
@@ -10,3 +24,13 @@ The following Python packages are also required for operation:\
 -**Django** (Version: 5.1.6)\
 -**Pillow** (Version: 11.1.0)\
 -**qrcode** (Version: 8.0)
+
+### Running the application
+1. Clone the repository using your preferred method.\
+2. Ensure that you have installed the prerequisite modules listed above via pip.
+3. Navigate to the 'WebsiteRoot' directory
+4. Run python manage.py makemigrations
+5. Run python manage.py migrate
+6. Run python manage.py runserver
+
+The application should now be running on your machine.
