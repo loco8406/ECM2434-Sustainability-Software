@@ -3,12 +3,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm
-from .models import Challenge, UserTable
+from .models import Challenge, UserTable, WaterStation
 from io import BytesIO
 import json
 import qrcode
@@ -157,14 +157,14 @@ def fetch_referral(request):
 ### GAMEKEEPER VIEWS
 
 # Gamekeeper Dashboard
-
+#Handles both forms on the Gamekeeper dashboard
 @login_required
 def gamekeeper_dashboard(request):
     if request.method == 'POST':  # If the form is submitted
         challengeForm = ChallengeForm(request.POST)
         waterStationForm = WaterStationForm(request.POST)
 
-        if challengeForm.is_valid():
+        if challengeForm.is_valid(): #Handles challenege form if submited
             challenge = challengeForm.save()  # Save and store the challenge instance
             challenge_name = challengeForm.cleaned_data.get(
                 'title')  # Get the title field
@@ -173,11 +173,11 @@ def gamekeeper_dashboard(request):
             # Redirect to the same page or another view
             return redirect('gamekeeper')
 
-        elif waterStationForm.is_valid():
+        elif waterStationForm.is_valid(): #Handles waterstation form if submited
             # Save and store the waterstation instance
             waterStation = waterStationForm.save()
             waterStation_name = waterStationForm.cleaned_data.get(
-                'name')  # Get the name field (or other relevant field)
+                'name')  # Get the name field for success message
             messages.success(
                 request, f'Waterstation "{waterStation_name}" created successfully!')
             # Redirect to another page for the QR generation or confirmation
@@ -218,7 +218,7 @@ def delete_challenge(request, challenge_id):
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-### QR CODE VIEWS
+#Basic QR code generation
 @login_required
 def generate_qr(request):
     data = request.GET.get('data')
