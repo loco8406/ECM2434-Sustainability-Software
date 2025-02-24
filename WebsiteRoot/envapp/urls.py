@@ -36,4 +36,10 @@ urlpatterns = [
     # path('read_only-map/', readonly_map, name='read_only_map'),
     # path('gamekeeper-map/', gamekeeper_map, name='gamekeeper_map'),
     # path('get-locations/', get_locations, name='get_locations'),
+
+     #Map URLs
+    
+    path ('gamekeeper_map/', views.gamekeeper_map, name='gamekeeper_map'),
+    path('', views.map_view, name='map'),  # Main page with map
+
 ]
