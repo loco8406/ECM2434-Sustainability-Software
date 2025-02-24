@@ -6,7 +6,7 @@ from .models import UserTable
 class CustomUserAdmin(UserAdmin):
     model = UserTable
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('role',)}),
+        (None, {'fields': ('role', 'referral_code', 'points')}),
     )
 
 
