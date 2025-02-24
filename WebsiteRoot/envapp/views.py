@@ -153,6 +153,7 @@ def fetch_referral(request):
 ### GAMEKEEPER VIEWS
 
 # Gamekeeper Dashboard
+
 @login_required
 def gamekeeper_dashboard(request):
     if request.method == 'POST':  # If the form is submitted
@@ -214,10 +215,9 @@ def delete_challenge(request, challenge_id):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 ### QR CODE VIEWS
-
+@login_required
 def generate_qr(request):
-    # Default to 'https://www.example.com'
-    data = request.GET.get('data', 'https://www.example.com')
+    data = request.GET.get('data')
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -244,3 +244,9 @@ def stationScanEvent(request, station_id):
     user.points += station.points_reward # Add points from station to user
     user.save() # Save user
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
+
+def map_view(request):
+    return render(request, 'envapp/map.html')
+
+def gamekeeper_map(request):
+    return render(request, 'envapp/gamekeeper_map.html')
