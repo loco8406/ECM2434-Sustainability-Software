@@ -244,3 +244,19 @@ def stationScanEvent(request, station_id):
     user.points += station.points_reward # Add points from station to user
     user.save() # Save user
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
+
+#For adding points on map
+def gamekeeper_map(request):
+    if request.method == "POST":
+        lat = request.POST.get("latitude")
+        lon = request.POST.get("longitude")
+        location_name = request.POST.get("location_name", "Game Location")
+
+        if lat and lon:
+            return JsonResponse({"latitude": lat, "longitude": lon, "location_name": location_name})
+    
+    return render(request, 'map_app/gamekeeper_map.html')
+
+def map_view(request):
+    locations = Location.objects.all()
+    return render(request, "map.html", {"locations": locations})
