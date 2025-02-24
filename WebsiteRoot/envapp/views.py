@@ -244,3 +244,9 @@ def stationScanEvent(request, station_id):
     user.points += station.points_reward # Add points from station to user
     user.save() # Save user
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
+
+def map_view(request):
+    return render(request, 'envapp/map.html')
+
+def gamekeeper_map(request):
+    return render(request, 'envapp/gamekeeper_map.html')
