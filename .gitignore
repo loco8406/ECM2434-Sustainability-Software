@@ -1,0 +1,10 @@
+venv/
+
+/WebsiteRoot/ECM2434/__pycache__
+/WebsiteRoot/envapp/__pycache__
+.idea
+WebsiteRoot/ECM2434/__pycache__/urls.cpython-310.pyc
+db.sqlite3
+W e b s i t e R o o t / d b . s q l i t e 3 
+ 
+ 
