@@ -13,6 +13,7 @@ from io import BytesIO
 import json
 import qrcode
 
+### LOGIN SYSTEM VIEWS
 
 # User Registration
 def register(request):
@@ -77,7 +78,22 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+    
 
+# Delete Account
+@login_required
+def delete_account(request):
+    user = request.user
+
+    Challenge.objects.filter(id=user.id).delete()
+
+    user.delete()
+
+    logout(request)
+    messages.success(request, "Your account has been permanently deleted.")
+    return redirect('login')
+
+### STUDENT DASHBOARD VIEWS
 
 # Student Dashboard
 @login_required
@@ -95,6 +111,12 @@ def student_dashboard(request):
         'progress_percentage': progress_percentage,
     }
     return render(request, 'envapp/student_dashboard.html', context)
+    
+# Leaderboard
+@login_required
+def leaderboard(request):
+    users = UserTable.objects.filter(role='user').order_by('-points')
+    return render(request, 'envapp/leaderboard.html', {'users': users})
 
 
 # Settings Page
@@ -117,7 +139,18 @@ def settings_view(request):
         return redirect('settings')
 
     return render(request, 'envapp/settings.html')
+    
+@login_required
+def fetch_referral(request):
+    if request.method == 'POST':
+        user = request.user
+        # Create referral code if it doesn't exist
+        code = user.getCode()
+        return JsonResponse({'referral_code': code})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
+### GAMEKEEPER VIEWS
 
 # Gamekeeper Dashboard
 @login_required
@@ -180,39 +213,7 @@ def delete_challenge(request, challenge_id):
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-
-# Leaderboard
-@login_required
-def leaderboard(request):
-    users = UserTable.objects.filter(role='user').order_by('-points')
-    return render(request, 'envapp/leaderboard.html', {'users': users})
-
-
-# Delete Account
-@login_required
-def delete_account(request):
-    user = request.user
-
-    Challenge.objects.filter(id=user.id).delete()
-
-    user.delete()
-
-    logout(request)
-    messages.success(request, "Your account has been permanently deleted.")
-    return redirect('login')
-
-
-@login_required
-def fetch_referral(request):
-    if request.method == 'POST':
-        user = request.user
-        # Create referral code if it doesn't exist
-        code = user.getCode()
-        return JsonResponse({'referral_code': code})
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
-
-### QR CODE GENERATION VIEW
+### QR CODE VIEWS
 
 def generate_qr(request):
     # Default to 'https://www.example.com'
@@ -230,8 +231,6 @@ def generate_qr(request):
     img.save(buffer, format="PNG")
     buffer.seek(0)
     return HttpResponse(buffer.getvalue(), content_type='image/png')
-
-#### QR CODE SCANNING VIEWS
 
 # Load Scan QR page
 @login_required
