@@ -40,5 +40,5 @@ The application should now be running on your machine.
 2. Acess django admin pannel and click on a registered user
 3. Scroll down and type "gamekeeper" instead of "user" in the box for role
 
-Now when this account logs in they will be directed to the gamekeeper dashbaord where they can implement game features
+Now when this account logs in they will be directed to the gamekeeper dashboard where they can edit game features
 
