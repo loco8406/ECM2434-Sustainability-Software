@@ -45,7 +45,7 @@
     <div class="progress-container">
       <p class="text-muted">Progress to next level: {{ user.points }}/{{ level_goal }} points</p>
       <div class="progress">
-        <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%"
+        <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%"
           aria-valuenow="{{ user.points }}" aria-valuemin="0" aria-valuemax="{{ level_goal }}">
           {{ progress_percentage }}%
         </div>
