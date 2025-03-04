@@ -274,3 +274,22 @@ footer {
     width: 100%;
     margin-top: 20px;
 }
+/* Registration*/
+.form-check-input {
+    width: 18px !important;
+    height: 18px !important;
+    cursor: pointer !important;
+    accent-color: var(--exeter-green) !important;
+    appearance: auto !important;
+}
+
+
+.form-GDPR-hyperlink {
+    color: var(--exeter-green) !important;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.form-check-label a:hover {
+    text-decoration: underline;
+}
