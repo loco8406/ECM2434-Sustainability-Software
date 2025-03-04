@@ -12,8 +12,7 @@ class ChallengeForm(forms.ModelForm):
 class WaterStationForm(forms.ModelForm):
     class Meta:
         model = WaterStation
-
-        fields = ['name', 'location_description', 'location', "points_reward"]
+        fields = ['name', 'latitude','longitude','location_description', 'points_reward']
 
 
 class CustomUserCreationForm(UserCreationForm):

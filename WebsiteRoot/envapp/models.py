@@ -92,6 +92,7 @@ class VideoWatchers(models.Model):
 
 class WaterStation(models.Model):
     name = models.CharField(max_length=200)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
     location_description = models.TextField()
-    location = models.TextField()
     points_reward = models.IntegerField(default=0)
