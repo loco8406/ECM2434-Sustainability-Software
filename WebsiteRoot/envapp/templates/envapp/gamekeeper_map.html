@@ -54,7 +54,7 @@
             if (tempMarker) {
                 map.removeLayer(tempMarker);
                 }
-            tempMarker = L.marker([lat, lon],{ icon: myIcon }).addTo(map);
+            tempMarker = L.marker([lat, lon],{ icon: newStation }).addTo(map);
             document.getElementById("id_latitude").value = lat;
             document.getElementById("id_longitude").value = lon;
             });
