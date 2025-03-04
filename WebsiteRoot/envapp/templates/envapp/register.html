@@ -31,10 +31,11 @@
                 </label>
             </div>
 
-            <button type="submit" id="registerButton" class="btn btn-primary mt-3" disabled>Register</button>
-
-            <p id="consentError" class="text-danger mt-2" style="display: none;">You must agree to the terms to proceed.
+            <p class="text- mt-2">
+                <button type="submit" id="registerButton" class="btn btn-primary mt-3" disabled>Register</button>
+                (You must agree to our Terms & Conditions and Privacy Policy to proceed.)
             </p>
+
         </form>
 
         {% for message in messages %}
@@ -228,18 +229,22 @@
         function toggleRegisterButton() {
             let checkbox = document.getElementById("consentCheckbox");
             let registerButton = document.getElementById("registerButton");
-            registerButton.disabled = !checkbox.checked;
+
+            if (checkbox.checked) {
+                registerButton.disabled = false;
+                checkbox.classList.remove("border-danger");
+            } else {
+                registerButton.disabled = true;
+            }
         }
 
         function validateConsent() {
             let checkbox = document.getElementById("consentCheckbox");
-            let errorText = document.getElementById("consentError");
 
             if (!checkbox.checked) {
-                errorText.style.display = "block";
+                checkbox.classList.add("border-danger");
                 return false;
             }
-
             return true;
         }
     </script>
