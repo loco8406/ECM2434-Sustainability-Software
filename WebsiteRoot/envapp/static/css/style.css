@@ -1,13 +1,3 @@
-/* envapp/static/css/style.css */
-
-/* Reset default margins and paddings */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Theme Colors */
 :root {
     --exeter-green: #017849;
     --exeter-dark-green: #00857B;
@@ -21,7 +11,12 @@
     --error-color: #721c24;
 }
 
-/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     background-color: var(--light-gray);
     font-family: 'Arial', sans-serif;
@@ -33,7 +28,6 @@ body {
     margin-top: 0; /* Ensures no extra space */
 }
 
-/* Full-Width Fixed Navbar */
 .navbar {
     width: 100%;
     position: fixed;
@@ -96,20 +90,20 @@ body {
     color: white !important;
 }
 
-/* Settings Icon */
-.material-icons {
-    font-size: 24px;
-    vertical-align: middle;
+.nav-profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
 }
 
-/* Page Titles */
 h1, h2 {
     color: var(--exeter-green);
     margin-bottom: 20px;
     text-align: center;
 }
 
-/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -140,7 +134,6 @@ tr:hover {
     transition: 0.3s;
 }
 
-/* Form Styling */
 .form-container {
     background: white;
     padding: 25px;
@@ -194,7 +187,6 @@ tr:hover {
     text-decoration: underline;
 }
 
-/* Success & Error Messages */
 .message {
     font-size: 14px;
     background: var(--success-bg);
@@ -203,7 +195,7 @@ tr:hover {
     border-radius: 6px;
     margin-top: 10px;
 }
-/* Button Styling */
+
 .btn-primary {
     background-color: var(--exeter-green) !important;
     color: white !important;
@@ -221,7 +213,6 @@ tr:hover {
     box-shadow: 0 0 10px var(--shadow-color);
 }
 
-/* Leaderboard Styling */
 .leaderboard-container {
     width: 90%;
     max-width: 900px;
@@ -249,7 +240,6 @@ tr:hover {
     overflow: hidden;
 }
 
-/* No Users Message */
 .no-users {
     font-size: 18px;
     color: var(--text-color);
@@ -260,7 +250,6 @@ tr:hover {
     margin-top: 15px;
 }
 
-/* Footer */
 footer {
     text-align: center;
     padding: 10px;
@@ -274,7 +263,7 @@ footer {
     width: 100%;
     margin-top: 20px;
 }
-/* Registration*/
+
 .form-check-input {
     width: 18px !important;
     height: 18px !important;
@@ -292,4 +281,93 @@ footer {
 
 .form-check-label a:hover {
     text-decoration: underline;
+}
+
+img {
+    max-width: unset !important; /* Removes Bootstrap constraints */
+    height: auto !important; /* Prevents unwanted scaling */
+}
+
+.profile-picture-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-picture-container img.profile-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    display: block !important;
+    background-color: white !important;
+    border: 3px solid var(--exeter-green) !important;
+}
+
+#cropImagePreview {
+    max-width: 100%;
+    max-height: 450px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+
+.btn-exeter {
+    background-color: var(--exeter-green);
+    color: white;
+    font-weight: bold;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-exeter:hover {
+    background-color: var(--exeter-dark-green);
+}
+
+.btn-exeter-danger {
+    background-color: var(--error-bg);
+    color: var(--error-color);
+    font-weight: bold;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-exeter-danger:hover {
+    background-color: red;
+    color: white;
+}
+
+#avatar {
+    display: none;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--exeter-green);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.custom-file-upload:hover {
+    background-color: var(--exeter-dark-green);
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
 }

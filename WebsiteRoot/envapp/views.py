@@ -1,7 +1,8 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -9,15 +10,18 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm
 from .models import Challenge, UserTable, WaterStation
-from io import BytesIO
-import json
 import qrcode
+import traceback
+import os
+from PIL import Image
+import json
 
-### LOGIN SYSTEM VIEWS
 
+# LOGIN SYSTEM VIEWS
 # Home Page
 def home(request):
     return render(request, 'envapp/home.html')
+
 
 # User Registration
 def register(request):
@@ -82,7 +86,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-    
+
 
 # Delete Account
 @login_required
@@ -97,8 +101,8 @@ def delete_account(request):
     messages.success(request, "Your account has been permanently deleted.")
     return redirect('login')
 
-### STUDENT DASHBOARD VIEWS
 
+# STUDENT DASHBOARD VIEWS
 # Student Dashboard
 @login_required
 def student_dashboard(request):
@@ -115,7 +119,8 @@ def student_dashboard(request):
         'progress_percentage': progress_percentage,
     }
     return render(request, 'envapp/student_dashboard.html', context)
-    
+
+
 # Leaderboard
 @login_required
 def leaderboard(request):
@@ -143,7 +148,8 @@ def settings_view(request):
         return redirect('settings')
 
     return render(request, 'envapp/settings.html')
-    
+
+
 @login_required
 def fetch_referral(request):
     if request.method == 'POST':
@@ -154,17 +160,66 @@ def fetch_referral(request):
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
-### GAMEKEEPER VIEWS
 
+@login_required
+def update_profile_picture(request):
+    if request.method == "POST" and request.FILES.get("avatar"):
+        user = request.user
+        uploaded_image = request.FILES["avatar"]
+
+        try:
+            # Delete old profile picture if it exists (but don't delete the default image)
+            if user.profile_picture and user.profile_picture.name != "profile_pics/default_profile_pic.png":
+                old_picture_path = os.path.join(
+                    settings.MEDIA_ROOT, str(user.profile_picture))
+                if os.path.exists(old_picture_path):
+                    os.remove(old_picture_path)
+
+            # Save the new profile picture
+            user.profile_picture = uploaded_image
+            user.save()
+
+            return JsonResponse({"success": True})
+
+        except Exception as e:
+            error_message = f"Error in update_profile_picture: {str(e)}"
+            traceback.print_exc()  # Print full error trace in the terminal
+            return JsonResponse({"success": False, "error": error_message}, status=500)
+
+    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+
+
+@login_required
+def remove_profile_picture(request):
+    if request.method == "POST":
+        user = request.user
+
+        # Delete old profile picture if it exists
+        if user.profile_picture and user.profile_picture.name != "profile_pics/default_profile_pic.png":
+            old_picture_path = os.path.join(
+                settings.MEDIA_ROOT, str(user.profile_picture))
+            if os.path.exists(old_picture_path):
+                os.remove(old_picture_path)
+
+        # Reset to default profile picture
+        user.profile_picture = "profile_pics/default_profile_pic.png"
+        user.save()
+
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False}, status=400)
+
+
+# GAMEKEEPER VIEWS
 # Gamekeeper Dashboard
-#Handles both forms on the Gamekeeper dashboard
+# Handles both forms on the Gamekeeper dashboard
 @login_required
 def gamekeeper_dashboard(request):
     if request.method == 'POST':  # If the form is submitted
         challengeForm = ChallengeForm(request.POST)
         waterStationForm = WaterStationForm(request.POST)
 
-        if challengeForm.is_valid(): #Handles challenege form if submited
+        if challengeForm.is_valid():  # Handles challenege form if submited
             challenge = challengeForm.save()  # Save and store the challenge instance
             challenge_name = challengeForm.cleaned_data.get(
                 'title')  # Get the title field
@@ -173,12 +228,13 @@ def gamekeeper_dashboard(request):
             # Redirect to the same page or another view
             return redirect('gamekeeper')
 
-        elif waterStationForm.is_valid(): #Handles waterstation form if submited
+        elif waterStationForm.is_valid():  # Handles waterstation form if submited
             # Save and store the waterstation instance
             waterStation = waterStationForm.save()  # Save and store the challenge instance
-            waterStation_id = waterStation.id # Get Water Station ID.
+            waterStation_id = waterStation.id  # Get Water Station ID.
             print(waterStation_id)
-            messages.success(request, f'Water Station "{waterStation_id}" created successfully!')
+            messages.success(
+                request, f'Water Station "{waterStation_id}" created successfully!')
             # Pass data to generate_qr view to encode.
             return HttpResponseRedirect(reverse('generate_qr') + f'?data={waterStation_id}')
 
@@ -208,7 +264,7 @@ def edit_challenge(request, challenge_id):
 
 
 # Delete Challenge
-@csrf_exempt  # Only use this if CSRF token isn't passed properly
+@csrf_exempt
 def delete_challenge(request, challenge_id):
     if request.method == "POST":
         challenge = get_object_or_404(Challenge, id=challenge_id)
@@ -217,7 +273,8 @@ def delete_challenge(request, challenge_id):
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-#Basic QR code generation
+
+# Basic QR code generation
 @login_required
 def generate_qr(request):
     data = request.GET.get('data')
@@ -235,21 +292,27 @@ def generate_qr(request):
     buffer.seek(0)
     return HttpResponse(buffer.getvalue(), content_type='image/png')
 
+
 # Load Scan QR page
 @login_required
 def scanQR(request):
     return render(request, 'envapp/scanqr.html')
-    
+
+
 # View for scanning a QR Code
 def stationScanEvent(request, station_id):
-    station = get_object_or_404(WaterStation, id=station_id) # Get the station that was scanned
-    user = request.user # Get the current User
-    user.points += station.points_reward # Add points from station to user
-    user.save() # Save user
-    return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
+    # Get the station that was scanned
+    station = get_object_or_404(WaterStation, id=station_id)
+    user = request.user  # Get the current User
+    user.points += station.points_reward  # Add points from station to user
+    user.save()  # Save user
+    # Redirect to User Portal
+    return render(request, 'envapp/student_dashboard.html')
+
 
 def map_view(request):
     return render(request, 'envapp/map.html')
+
 
 def gamekeeper_map(request):
     return render(request, 'envapp/gamekeeper_map.html')

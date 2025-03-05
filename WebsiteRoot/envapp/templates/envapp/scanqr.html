@@ -5,38 +5,40 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scan Station - Plastic Waste Tracker</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" integrity="sha512-r6rDA7W6ZeQhvl8S7yRVQUKVHdexq+GAlNkNNqVC7YyIV+NwqCTJe2hDWCiffTyRNOeGEzRRJ9ifvRm/HCzGYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Station - Plastic Waste Tracker</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"
+        integrity="sha512-r6rDA7W6ZeQhvl8S7yRVQUKVHdexq+GAlNkNNqVC7YyIV+NwqCTJe2hDWCiffTyRNOeGEzRRJ9ifvRm/HCzGYg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
+
 <body>
     <h1>Scan a Station</h1>
-	<!-- This is the element which actually has the viewfinder --->
+    <!-- This is the element which actually has the viewfinder --->
     <div id="reader" style="width: 300px;"></div>
-	<p>Please use the viewfinder to scan a QR Code.</p>
-	<p>Upon successful scan, your points will be counted and you will be redirected back to the dashboard</p>
+    <p>Please use the viewfinder to scan a QR Code.</p>
+    <p>Upon successful scan, your points will be counted and you will be redirected back to the dashboard</p>
     <script>
         function onScanSuccess(decodedText, decodedResult) {
-			// Redirect to URL, passing the station retrieved from the decoded qr code.
-			window.location.href = "http://localhost:8000/scannedStation/" + decodedText // THIS NEEDS TO BE CHANGED AT A LATER DATE!!! Set to localhost for testing purposes ONLY!
-			console.log("Scanned: " + decodedText)
+            // Redirect to URL, passing the station retrieved from the decoded qr code.
+            window.location.href = "http://localhost:8000/scannedStation/" + decodedText // THIS NEEDS TO BE CHANGED AT A LATER DATE!!! Set to localhost for testing purposes ONLY!
+            console.log("Scanned: " + decodedText)
         }
 
         function onScanError(errorMessage) {
             // Log an error to the console when the scan fails
             console.warn(`Code scan error = ${error}`);
-		}
+        }
 
-       let html5QrCode = new Html5Qrcode("reader");
+        let html5QrCode = new Html5Qrcode("reader");
         html5QrCode.start(
             { facingMode: "environment" }, // This specifies the rear facing camera as a preference ('user' refers to the front-facing camera)
             {
                 fps: 10,    // Frames per second (may adjust if necessary)
-                qrbox: {width: 250, height: 250}  // Size and dimensions of the viewfinder
+                qrbox: { width: 250, height: 250 }  // Size and dimensions of the viewfinder
             },
             onScanSuccess,
             onScanError
@@ -45,4 +47,5 @@
         });
     </script>
 </body>
+
 </html>
