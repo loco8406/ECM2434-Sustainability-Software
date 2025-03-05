@@ -29,12 +29,16 @@
                     <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal"
                         class="form-GDPR-hyperlink">Privacy Policy</a>.
                 </label>
-            </div>
 
-            <p class="text- mt-2">
+                <b>
+                    <i>
+                        <p id="consentWarning" class="text-danger mt-2">
+                            You must agree to our Terms & Conditions and Privacy Policy to proceed.
+                        </p>
+                    </i>
+                </b>
                 <button type="submit" id="registerButton" class="btn btn-primary mt-3" disabled>Register</button>
-                (You must agree to our Terms & Conditions and Privacy Policy to proceed.)
-            </p>
+            </div>
 
         </form>
 
@@ -229,20 +233,23 @@
         function toggleRegisterButton() {
             let checkbox = document.getElementById("consentCheckbox");
             let registerButton = document.getElementById("registerButton");
+            let consentWarning = document.getElementById("consentWarning");
 
             if (checkbox.checked) {
                 registerButton.disabled = false;
-                checkbox.classList.remove("border-danger");
+                consentWarning.style.display = "none";
             } else {
                 registerButton.disabled = true;
+                consentWarning.style.display = "block";
             }
         }
 
         function validateConsent() {
             let checkbox = document.getElementById("consentCheckbox");
+            let consentWarning = document.getElementById("consentWarning");
 
             if (!checkbox.checked) {
-                checkbox.classList.add("border-danger");
+                consentWarning.style.display = "block";
                 return false;
             }
             return true;
