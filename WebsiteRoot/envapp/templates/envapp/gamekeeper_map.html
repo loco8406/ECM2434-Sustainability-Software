@@ -43,11 +43,10 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-{#        {% for station in water_stations %}#}
-{#        L.marker([{{ station.latitude }}, {{ station.longitude }}]).addTo(map)#}
-{#        .bindPopup("{{ station.name }} - {{ station.location_description }}");#}
-{#        {% endfor %}#}
-
+        {% for station in water_stations %}
+            L.marker([{{ station.latitude }}, {{ station.longitude }}]).addTo(map)
+                .bindPopup("Name: {{ station.name }} - Location description: {{ station.location_description }} - Points: {{ station.points_reward }}");
+        {% endfor %}
         map.on('click', function (e) {
             var lat = e.latlng.lat;
             var lon = e.latlng.lng;
@@ -60,7 +59,7 @@
             });
 
         document.getElementById("waterStationForm").onsubmit = function (event) {
-            event.preventDefault();
+        event.preventDefault();
         };
     </script>
 </body>

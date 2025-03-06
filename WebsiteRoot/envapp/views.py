@@ -263,9 +263,6 @@ def gamekeeper_map(request):
                 'name')  # Get the name field for success message
             messages.success(
                 request, f'Waterstation "{waterStation_name}" created successfully!')
-            # Redirect to another page for the QR generation or confirmation
-            return redirect('generate_qr')
-
     else:
         waterStationForm = WaterStationForm()
     return render(request, 'envapp/gamekeeper_map.html',{'water_stations':water_stations,'waterStationForm': waterStationForm})
