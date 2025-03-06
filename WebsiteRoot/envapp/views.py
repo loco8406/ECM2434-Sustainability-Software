@@ -1,23 +1,23 @@
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
 from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm
-from .models import Challenge, UserTable, WaterStation, StationUsers
-from io import BytesIO
-import json
+from .models import Challenge, UserTable, WaterStation
 import qrcode
 from datetime import datetime, timedelta
-import traceback
+from io import BytesIO
+import json
 import os
 from PIL import Image
+import traceback
 
 
 # LOGIN SYSTEM VIEWS
@@ -31,30 +31,26 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            # 1) Create the user object, but don't save it yet
+            # Create user object but don't save yet
             user = form.save(commit=False)
 
-            # 2) Save the user so we have a primary key
+            # Save user to database, which will auto-set consent_timestamp
             user.save()
 
-            # 3) Read the typed referral code from the form
+            # Process referral code
             typed_code = form.cleaned_data.get('input_referral_code')
-
-            # 4) If they entered a code, see if it matches a referrer
             if typed_code:
                 try:
                     referrer = UserTable.objects.get(referral_code=typed_code)
-                    # Reward both
-                    referrer.addPoints(50)  # e.g., 50 points for referrer
-                    user.addPoints(25)      # e.g., 25 points for new user
+                    referrer.addPoints(50)  # Reward referrer
+                    user.addPoints(25)  # Reward new user
                 except UserTable.DoesNotExist:
                     messages.warning(
-                        request, "Referral code not found. No bonus points awarded.")
+                        request, "Referral code not found. No bonus points awarded."
+                    )
 
-            # 5) Give the new user their own unique referral code
-            user.getCode()
+            user.getCode()  # Generate referral code for the new user
 
-            # 6) Success message and redirect
             messages.success(request, f"Account created for {user.username}!")
             return redirect('login')
     else:
@@ -89,6 +85,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
 
 # Delete Account
 @login_required
@@ -137,19 +134,48 @@ def settings_view(request):
 
     if request.method == 'POST':
         user = request.user
+        updated = False
 
-        user.first_name = request.POST.get('display_name', user.first_name)
+        # Update username if provided
+        new_username = request.POST.get('username')
+        if new_username and new_username != user.username:
+            if UserTable.objects.filter(username=new_username).exists():
+                messages.error(
+                    request,
+                    'This username is already taken. Please choose another one.',
+                    extra_tags='custom-error'
+                )
+                return redirect('settings')
+            else:
+                user.username = new_username
+                updated = True
 
+        # Update display name
+        new_display_name = request.POST.get('display_name')
+        if new_display_name and new_display_name != user.first_name:
+            user.first_name = new_display_name
+            updated = True
+
+        # Update password
         new_password = request.POST.get('password')
         if new_password:
             user.set_password(new_password)
+            update_session_auth_hash(request, user)
+            updated = True
 
-        user.save()
-        messages.success(request, 'Settings updated successfully!')
+        if updated:
+            user.save()
+            messages.success(request, 'Settings updated successfully!')
+        else:
+            messages.info(request, 'No changes were made.')
 
         return redirect('settings')
 
-    return render(request, 'envapp/settings.html')
+    context = {
+        'user': request.user,
+        'full_name': f"{request.user.first_name} {request.user.last_name}".strip() if request.user.first_name or request.user.last_name else "No Name Provided"
+    }
+    return render(request, 'envapp/settings.html', context)
 
 
 @login_required
@@ -303,10 +329,12 @@ def scanQR(request):
 
 # View for scanning a QR Code
 def stationScanEvent(request, station_id):
-    station = get_object_or_404(WaterStation, id=station_id) # Get the station that was scanned
-    user = request.user # Get the current User
-    cooldownActive = False # Flag used for indicating whether the user has the cooldown active.
-    
+    # Get the station that was scanned
+    station = get_object_or_404(WaterStation, id=station_id)
+    user = request.user  # Get the current User
+    # Flag used for indicating whether the user has the cooldown active.
+    cooldownActive = False
+
     # Get all the usage records
     usageRecords = StationUsers.objects.all()
 
@@ -315,35 +343,38 @@ def stationScanEvent(request, station_id):
     print('station scanned')
 
     # Look through the usage records.
-    for record in usageRecords:        
+    for record in usageRecords:
         # If the fill record has the same user ID AND water station ID, AND that fill record is younger than the cooldown duration. (i.e this user has filled at this station within the last hour)
         if record.userID == user.id and record.waterStationID == station.id and record.fillTime > cutOff:
-            cooldownActive = True # Set the cooldown flag to true
-            print(record.userID, record.waterStationID, record.fillTime, user.id, station.id, cutOff, record.userID == user.id, record.waterStationID == station.id, record.fillTime > cutOff)
-        
+            cooldownActive = True  # Set the cooldown flag to true
+            print(record.userID, record.waterStationID, record.fillTime, user.id, station.id, cutOff,
+                  record.userID == user.id, record.waterStationID == station.id, record.fillTime > cutOff)
+
         # If the record's fill time is older than the cooldown duration, remove the record. This stops the database from ballooning too much with old obsolete records.
         if record.fillTime <= cutOff:
             record.delete()
-            
+
     # If the cooldown isn't active, add the points.
     if cooldownActive == False:
         print('points added')
-        user.points += station.points_reward # Add points from station to user
-        user.save() # Save user
-            
+        user.points += station.points_reward  # Add points from station to user
+        user.save()  # Save user
+
         # Add a new fill record to the StationUsers table, to record that the user scanned their bottle.
-        newFillRecord = StationUsers(userID=user.id, waterStationID=station.id, fillTime=datetime.now())
+        newFillRecord = StationUsers(
+            userID=user.id, waterStationID=station.id, fillTime=datetime.now())
         newFillRecord.save()
-            
-    return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
+
+    # Redirect to User Portal
+    return render(request, 'envapp/student_dashboard.html')
+
 
 def map_view(request):
     water_stations = WaterStation.objects.all()
-    return render(request, 'envapp/map.html',{'water_stations':water_stations})
+    return render(request, 'envapp/map.html', {'water_stations': water_stations})
 
 
 def gamekeeper_map(request):
-
     water_stations = WaterStation.objects.all()
     if request.method == 'POST':  # If the form is submitted
         waterStationForm = WaterStationForm(request.POST)
@@ -356,5 +387,4 @@ def gamekeeper_map(request):
                 request, f'Waterstation "{waterStation_name}" created successfully!')
     else:
         waterStationForm = WaterStationForm()
-    return render(request, 'envapp/gamekeeper_map.html',{'water_stations':water_stations,'waterStationForm': waterStationForm})
-
+    return render(request, 'envapp/gamekeeper_map.html', {'water_stations': water_stations, 'waterStationForm': waterStationForm})

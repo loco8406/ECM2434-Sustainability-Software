@@ -18,8 +18,7 @@ class Challenge(models.Model):
     location = models.TextField()
     challenge_date = models.DateTimeField()
     points_reward = models.IntegerField(default=0)
-    created_at = models.DateTimeField(
-        auto_now_add=True)  # Timestamp when created
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -32,6 +31,7 @@ class UserTable(AbstractUser):
         max_length=10, blank=True, null=True, unique=True)
     profile_picture = models.ImageField(
         upload_to='profile_pics/', blank=True, null=True)
+    consent_timestamp = models.DateTimeField(auto_now_add=True)
 
     def getRole(self):
         return self.role
@@ -91,6 +91,7 @@ class WaterStation(models.Model):
     longitude = models.FloatField()
     location_description = models.TextField()
     points_reward = models.IntegerField(default=0)
+
 
 class StationUsers(models.Model):
     # Stores the user ID of the user who has used the Water Station
