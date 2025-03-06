@@ -252,7 +252,7 @@ def stationScanEvent(request, station_id):
     usageRecords = StationUsers.objects.all()
 
     # Get a 'cut off' time to determine if the cooldown has expired (this can be adjusted, set to 1 minute for now for ease of testing)
-    cutOff = timezone.now() - timedelta(minutes=1)
+    cutOff = timezone.now() - timedelta(hours=1)
     print('station scanned')
 
     # Look through the usage records.
