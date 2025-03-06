@@ -45,7 +45,8 @@ class WaterStationTests(TestCase):
         self.station = WaterStation.objects.create(
             name='Test Station',
             location_description='Description',
-            location='Test Location',
+            longitude = 33.3213,
+            latitude = 23.4543,
             points_reward=50
         )
     
