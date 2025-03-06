@@ -26,9 +26,10 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        L.marker([50.7374, -3.5352]).addTo(map)
-            .bindPopup("University of Exeter")
-            .openPopup();
+        {% for station in water_stations %}
+            L.marker([{{ station.latitude }}, {{ station.longitude }}]).addTo(map)
+                .bindPopup("Name: {{ station.name }} - Location description: {{ station.location_description }} - Points: {{ station.points_reward }}");
+        {% endfor %}
     </script>
 
 </body>

@@ -338,8 +338,23 @@ def stationScanEvent(request, station_id):
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
 
 def map_view(request):
-    return render(request, 'envapp/map.html')
+    water_stations = WaterStation.objects.all()
+    return render(request, 'envapp/map.html',{'water_stations':water_stations})
 
 
 def gamekeeper_map(request):
-    return render(request, 'envapp/gamekeeper_map.html')
+
+    water_stations = WaterStation.objects.all()
+    if request.method == 'POST':  # If the form is submitted
+        waterStationForm = WaterStationForm(request.POST)
+        if waterStationForm.is_valid():  # Handles waterstation form if submited
+            # Save and store the waterstation instance
+            waterStation = waterStationForm.save()
+            waterStation_name = waterStationForm.cleaned_data.get(
+                'name')  # Get the name field for success message
+            messages.success(
+                request, f'Waterstation "{waterStation_name}" created successfully!')
+    else:
+        waterStationForm = WaterStationForm()
+    return render(request, 'envapp/gamekeeper_map.html',{'water_stations':water_stations,'waterStationForm': waterStationForm})
+
