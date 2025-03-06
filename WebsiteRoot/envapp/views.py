@@ -338,7 +338,8 @@ def stationScanEvent(request, station_id):
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
 
 def map_view(request):
-    return render(request, 'envapp/map.html')
+    water_stations = WaterStation.objects.all()
+    return render(request, 'envapp/map.html',{'water_stations':water_stations})
 
 
 def gamekeeper_map(request):
