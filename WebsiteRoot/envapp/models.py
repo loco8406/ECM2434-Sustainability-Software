@@ -90,3 +90,11 @@ class WaterStation(models.Model):
     location_description = models.TextField()
     location = models.TextField()
     points_reward = models.IntegerField(default=0)
+
+class StationUsers(models.Model):
+    # Stores the user ID of the user who has used the Water Station
+    userID = models.IntegerField()
+    # Stores the ID of the water station that has been used
+    waterStationID = models.IntegerField()
+    # Automatically adds the date the station has been used
+    fillTime = models.DateTimeField(auto_now_add=True)

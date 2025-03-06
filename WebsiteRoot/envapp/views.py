@@ -8,13 +8,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm
-from .models import Challenge, UserTable, WaterStation
+from .models import Challenge, UserTable, WaterStation, StationUsers
+from io import BytesIO
+import json
 import qrcode
+from datetime import datetime, timedelta
 import traceback
 import os
 from PIL import Image
-import json
 
 
 # LOGIN SYSTEM VIEWS
@@ -86,7 +89,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-
 
 # Delete Account
 @login_required
@@ -301,14 +303,39 @@ def scanQR(request):
 
 # View for scanning a QR Code
 def stationScanEvent(request, station_id):
-    # Get the station that was scanned
-    station = get_object_or_404(WaterStation, id=station_id)
-    user = request.user  # Get the current User
-    user.points += station.points_reward  # Add points from station to user
-    user.save()  # Save user
-    # Redirect to User Portal
-    return render(request, 'envapp/student_dashboard.html')
+    station = get_object_or_404(WaterStation, id=station_id) # Get the station that was scanned
+    user = request.user # Get the current User
+    cooldownActive = False # Flag used for indicating whether the user has the cooldown active.
+    
+    # Get all the usage records
+    usageRecords = StationUsers.objects.all()
 
+    # Get a 'cut off' time to determine if the cooldown has expired (this can be adjusted, set to 1 minute for now for ease of testing)
+    cutOff = timezone.now() - timedelta(hours=1)
+    print('station scanned')
+
+    # Look through the usage records.
+    for record in usageRecords:        
+        # If the fill record has the same user ID AND water station ID, AND that fill record is younger than the cooldown duration. (i.e this user has filled at this station within the last hour)
+        if record.userID == user.id and record.waterStationID == station.id and record.fillTime > cutOff:
+            cooldownActive = True # Set the cooldown flag to true
+            print(record.userID, record.waterStationID, record.fillTime, user.id, station.id, cutOff, record.userID == user.id, record.waterStationID == station.id, record.fillTime > cutOff)
+        
+        # If the record's fill time is older than the cooldown duration, remove the record. This stops the database from ballooning too much with old obsolete records.
+        if record.fillTime <= cutOff:
+            record.delete()
+            
+    # If the cooldown isn't active, add the points.
+    if cooldownActive == False:
+        print('points added')
+        user.points += station.points_reward # Add points from station to user
+        user.save() # Save user
+            
+        # Add a new fill record to the StationUsers table, to record that the user scanned their bottle.
+        newFillRecord = StationUsers(userID=user.id, waterStationID=station.id, fillTime=datetime.now())
+        newFillRecord.save()
+            
+    return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
 
 def map_view(request):
     return render(request, 'envapp/map.html')
