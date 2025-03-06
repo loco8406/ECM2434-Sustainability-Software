@@ -34,3 +34,11 @@ The following Python packages are also required for operation:\
 6. Run python manage.py runserver
 
 The application should now be running on your machine.
+
+### Admin can assign gamekeepers functionality 
+1. Create django superuser run python manage.py createsuperuser
+2. Acess django admin pannel and click on a registered user
+3. Scroll down and type "gamekeeper" instead of "user" in the box for role
+
+Now when this account logs in they will be directed to the gamekeeper dashboard where they can edit game features
+
