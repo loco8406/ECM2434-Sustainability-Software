@@ -75,10 +75,33 @@
             </div>
         </div>
 
-        <form class="mt-4 position-relative">
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert alert-danger custom-error alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" class="mt-4 position-relative">
+            {% csrf_token %}
+
             <div class="mb-3">
-                <label for="display-name" class="form-label">Display Name</label>
-                <input type="text" class="form-control" id="display-name" value="Student123">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="full-name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="full-name" name="full_name"
+                    value="{% if full_name %}{{ full_name }}{% else %}No Name Provided{% endif %}" readonly>
+
+                <div>
+                    (Your name cannot be changed)
+                </div>
             </div>
 
             <div class="mb-3 position-relative">
@@ -86,21 +109,21 @@
                 <input type="email" class="form-control email-field" id="email" value="student@example.com" readonly
                     onmouseover="showTooltip()" onmouseout="hideTooltip()">
                 <div>
-                    You cannot change your email.
+                    (You cannot change your email)
                 </div>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">New Password (Optional)</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter new password">
+                <input type="password" class="form-control" id="password" name="password"
+                    placeholder="Enter new password">
             </div>
 
             <div class="text-center">
                 <button type="submit" class="btn btn-success">Save Changes</button>
-                <a href="student_dashboard.html" class="btn btn-secondary">Cancel</a>
+                <a href="student_dashboard" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
-    </div>
     </div>
 
     <footer class="text-center mt-5 py-3 bg-light">
@@ -152,7 +175,6 @@
                 }
             });
 
-            // ✅ Handle Image Cropping and Upload
             confirmCropButton.addEventListener("click", function () {
                 if (!cropper) {
                     alert("Error: Cropper.js not initialized!");
