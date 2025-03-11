@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -18,6 +18,7 @@ import json
 import os
 from PIL import Image
 import traceback
+from django.core.exceptions import PermissionDenied
 
 
 # LOGIN SYSTEM VIEWS
@@ -239,9 +240,16 @@ def remove_profile_picture(request):
 
 
 # GAMEKEEPER VIEWS
+# Function to check if the user has the gamekeeper role
+def is_gamekeeper(user):
+    if user.role == "gamekeeper" and user.is_authenticated:
+        return True
+    raise PermissionDenied  # Show 403 Forbidden error if not a gamekeeper
+
 # Gamekeeper Dashboard
 # Handles both forms on the Gamekeeper dashboard
 @login_required
+@user_passes_test(is_gamekeeper, login_url='/login/')
 def gamekeeper_dashboard(request):
     if request.method == 'POST':  # If the form is submitted
         challengeForm = ChallengeForm(request.POST)
@@ -369,11 +377,14 @@ def stationScanEvent(request, station_id):
     return render(request, 'envapp/student_dashboard.html')
 
 
+
 def map_view(request):
     water_stations = WaterStation.objects.all()
     return render(request, 'envapp/map.html', {'water_stations': water_stations})
 
 
+@login_required
+@user_passes_test(is_gamekeeper, login_url='/login/')
 def gamekeeper_map(request):
     water_stations = WaterStation.objects.all()
     if request.method == 'POST':  # If the form is submitted
@@ -388,3 +399,5 @@ def gamekeeper_map(request):
     else:
         waterStationForm = WaterStationForm()
     return render(request, 'envapp/gamekeeper_map.html', {'water_stations': water_stations, 'waterStationForm': waterStationForm})
+
+
