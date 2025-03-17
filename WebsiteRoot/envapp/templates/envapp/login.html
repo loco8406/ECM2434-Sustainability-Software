@@ -15,7 +15,14 @@
 <body>
     <div class="form-container">
         <h2>Login</h2>
-        <form action="/login/" method="POST">
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
@@ -26,8 +33,7 @@
             <button type="submit" class="btn-primary">Login</button>
 
             <p class="redirect-link">
-                Don't have an account? <a href="/register/" class="register-link">Register
-                    here</a>
+                Don't have an account? <a href="{% url 'register' %}">Register here</a>
             </p>
         </form>
     </div>

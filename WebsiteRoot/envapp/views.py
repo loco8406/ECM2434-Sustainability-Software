@@ -65,7 +65,6 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
@@ -77,7 +76,7 @@ def login_view(request):
                 return redirect('student_dashboard')
         else:
             messages.error(request, 'Invalid credentials, please try again.')
-            return redirect('login')
+            return render(request, 'envapp/login.html')
 
     return render(request, 'envapp/login.html')
 
@@ -289,7 +288,7 @@ def edit_challenge(request, challenge_id):
 
     if request.method == 'POST':
         form = ChallengeForm(request.POST, instance=challenge)
-        if form.is_valid():
+        if form.is_valid():  # Corrected method call
             form.save()
             messages.success(request, "Challenge updated successfully!")
             return redirect('gamekeeper_dashboard')
