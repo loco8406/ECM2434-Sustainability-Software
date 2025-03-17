@@ -42,6 +42,12 @@ urlpatterns = [
     # Map URLs
     path('gamekeeper_map/', views.gamekeeper_map, name='gamekeeper_map'),
     path('map/', views.map_view, name='map'),  # Main page with map
+    
+    # GAME URLs
+    path('sippyBottle/', views.sippyBottle, name='sippyBottle'),
+    path('api/points/', views.getUserPoints, name='getUserPoints'),
+    path('pointUpdate/<int:newPointValue>/',
+         views.updatePointsEvent, name='updatePointsEvent'),
 ]
 
 if settings.DEBUG:

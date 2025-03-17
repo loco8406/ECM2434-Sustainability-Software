@@ -1,0 +1,28 @@
+{% include 'envapp/navbar.html' %}
+{% load static %}
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bottleBounce | Sip n Save</title>
+  
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  
+  <script language="javascript" type="text/javascript" src="https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bmoren/p5.collide2D@0.7.3/p5.collide2d.js"></script>
+  <script src="https://github.com/mveteanu/p5.SceneManager"></script>
+  
+  <script src="{% static 'sippyBottle/sketch.js' %}"></script>
+  <script src="{% static 'sippyBottle/bottle.js' %}"></script>
+  <script src="{% static 'sippyBottle/pipe.js' %}"></script>
+  
+  <script>const staticPath = "{% static 'sippyBottle/' %}";</script>
+</head>
+
+<body>
+</body>
+</html>
+ 
