@@ -54,7 +54,7 @@ class UserTable(AbstractUser):
     def subtractPoints(self, pointsLost):
         self.points -= pointsLost
         self.save()
-
+        
     def getCode(self):
         """Generate and save a referral code if one does not already exist."""
         if not self.referral_code:

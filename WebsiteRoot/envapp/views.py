@@ -365,9 +365,10 @@ def stationScanEvent(request, station_id):
     # If the cooldown isn't active, add the points.
     if cooldownActive == False:
         print('points added')
-        user.points += station.points_reward  # Add points from station to user
-        user.save()  # Save user
-
+        user.points += station.points_reward # Add points from station to user's total points
+        user.fuelRemaining += station.points_reward # Also add to the 'fuel' field for use in the game
+        user.save() # Save user
+            
         # Add a new fill record to the StationUsers table, to record that the user scanned their bottle.
         newFillRecord = StationUsers(
             userID=user.id, waterStationID=station.id, fillTime=datetime.now())
@@ -400,4 +401,24 @@ def gamekeeper_map(request):
         waterStationForm = WaterStationForm()
     return render(request, 'envapp/gamekeeper_map.html', {'water_stations': water_stations, 'waterStationForm': waterStationForm})
 
+#GAME VIEWS
+#Load Game
+@login_required
+def sippyBottle(request):
+    return render(request, 'envapp/sippyBottle.html')
+    
+@login_required
+def getUserPoints(request):
+    user = request.user
+    return JsonResponse({'points': user.points})
 
+@login_required    
+def updatePointsEvent(request, newPointValue):
+    user = request.user # Get the current User
+    
+    # Check that the point value isn't being increased to prevent cheating via URL
+    if newPointValue < user.points:
+        user.points = newPointValue # Set new point value
+        user.save()
+        
+    return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal

@@ -24,7 +24,7 @@
     <script>
         function onScanSuccess(decodedText, decodedResult) {
             // Redirect to URL, passing the station retrieved from the decoded qr code.
-            window.location.href = "http://localhost:8000/scannedStation/" + decodedText // THIS NEEDS TO BE CHANGED AT A LATER DATE!!! Set to localhost for testing purposes ONLY!
+            window.location.href = "/scannedStation/" + decodedText
             console.log("Scanned: " + decodedText)
         }
 
