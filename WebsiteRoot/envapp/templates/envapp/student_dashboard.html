@@ -36,11 +36,10 @@
     <p>Track how much plastic waste you're preventing from going into landfills by refilling your reusable bottle.</p>
 
     <h3 class="mt-4">
-      🌱 Plastic Waste Prevented: <strong>{{ user.points }} Points</strong>
+      💧 Water Collected: <strong>{{ user.points }} Droplets</strong>
     </h3>
 
     <div class="progress-container">
-      <p class="text-muted">Progress to next level: {{ user.points }}/{{ level_goal }} points</p>
       <div class="progress">
         <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%"
           aria-valuenow="{{ user.points }}" aria-valuemin="0" aria-valuemax="{{ level_goal }}">
@@ -50,7 +49,7 @@
     </div>
 
 
-    <h2 class="mt-4">📌 Track Your Refills</h2>
+    <h2 class="mt-4">🍶 Refill your Bottle!</h2>
     <ul class="list-group">
       <li class="list-group-item">
         Refill Your Bottle at a Water Station 💧 -
@@ -62,8 +61,8 @@
         <span id="referral_code" class="ms-2 text-muted"></span>
       </li>
       <li class="list-group-item">
-        Use a Reusable Cup Instead of a Plastic One ☕ -
-        <button class="btn btn-success btn-sm">Log Action</button>
+        Use your droplets and play Bottle Bounce! 🎮 -
+        <button onclick="goToBottleBounce()" class="btn btn-success btn-sm">Play!</button>
       </li>
     </ul>
 
@@ -85,6 +84,11 @@
   <script>
     function goToScanPage() {
       document.location.href = "{% url 'scanQR' %}"
+    }
+	
+	// Function to redirect to bottle bounce game
+	function goToBottleBounce() {
+      document.location.href = "{% url 'sippyBottle' %}"
     }
 
     document.addEventListener('DOMContentLoaded', function () {
