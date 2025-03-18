@@ -10,9 +10,9 @@ from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm
-from .models import Challenge, UserTable, WaterStation
+from .models import Challenge, UserTable, WaterStation, StationUsers
 import qrcode
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 import json
 import os
