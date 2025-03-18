@@ -32,6 +32,7 @@ class UserTable(AbstractUser):
     profile_picture = models.ImageField(
         upload_to='profile_pics/', blank=True, null=True)
     consent_timestamp = models.DateTimeField(auto_now_add=True)
+    fuelRemaining = models.IntegerField(default=0)
 
     def getRole(self):
         return self.role
@@ -100,3 +101,9 @@ class StationUsers(models.Model):
     waterStationID = models.IntegerField()
     # Automatically adds the date the station has been used
     fillTime = models.DateTimeField(auto_now_add=True)
+
+    def get_formatted_date(self):
+        return self.fillTime.strftime("%B %d, %Y at %I:%M %p")
+
+    class Meta:
+        ordering = ['-fillTime']
