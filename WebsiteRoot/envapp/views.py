@@ -10,9 +10,9 @@ from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm
-from .models import Challenge, UserTable, WaterStation
+from .models import Challenge, UserTable, WaterStation, StationUsers
 import qrcode
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 import json
 import os
@@ -396,6 +396,14 @@ def gamekeeper_map(request):
                 'name')  # Get the name field for success message
             messages.success(
                 request, f'Waterstation "{waterStation_name}" created successfully!')
+        elif 'station_id' in request.POST:
+            station_id = request.POST.get('station_id')
+            try:
+                station = WaterStation.objects.get(id=station_id)
+                station.delete()
+                messages.success(request, f'Water station "{station.name}" removed successfully!')
+            except WaterStation.DoesNotExist:
+                messages.error(request, 'Water station not found.')
     else:
         waterStationForm = WaterStationForm()
     return render(request, 'envapp/gamekeeper_map.html', {'water_stations': water_stations, 'waterStationForm': waterStationForm})

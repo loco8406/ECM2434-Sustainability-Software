@@ -20,16 +20,37 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map').setView([50.7374, -3.5352], 16); // Center on Exeter University
-
+        const map = L.map('map');
+        map.locate({setView: true,maxZoom: 16})
+        const profilePic ="{% if request.user.profile_picture and request.user.profile_picture.url != '/media/profile_pics/default_profile_pic.png' %}{{ request.user.profile_picture.url }}{% else %}{{ MEDIA_URL }}profile_pics/default_profile_pic.png{% endif %}"
+        var userProfile = L.icon({
+            iconUrl: profilePic,
+            iconSize: [30, 30],
+            });
+        var waterStationsLayer = L.layerGroup();
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution: 'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
         }).addTo(map);
 
+        function markUserLocation(e) {
+            L.marker(e.latlng,{icon:userProfile}).addTo(map)
+                .bindPopup("You are here").openPopup();
+        }
+
+        map.on('locationfound', markUserLocation);
+        function onLocationError(e) {
+        alert(e.message);
+        }
         {% for station in water_stations %}
-            L.marker([{{ station.latitude }}, {{ station.longitude }}]).addTo(map)
-                .bindPopup("Name: {{ station.name }} - Location description: {{ station.location_description }} - Points: {{ station.points_reward }}");
+            var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}]).addTo(map)
+                .bindPopup("Name: {{ station.name }} - Location description: {{ station.location_description }} - Points: {{ station.points_reward }}")
+                .on("click", function () {
+                map.flyTo(this.getLatLng(), 18);
+                });
+            waterStationsLayer.addLayer(marker);
+
         {% endfor %}
+    waterStationsLayer.addTo(map);
     </script>
 
 </body>
