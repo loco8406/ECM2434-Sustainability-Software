@@ -19,6 +19,7 @@ import os
 from PIL import Image
 import traceback
 from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 
 
 # LOGIN SYSTEM VIEWS
@@ -111,11 +112,13 @@ def student_dashboard(request):
         100 if level_goal > 0 else 0
     # Cap at 100% and round to 1 decimal
     progress_percentage = min(100, round(raw_percentage, 1))
+    user_refills = StationUsers.objects.filter(userID=request.user.id)
 
     context = {
         'user': request.user,
         'level_goal': level_goal,
         'progress_percentage': progress_percentage,
+        'refills' : user_refills
     }
     return render(request, 'envapp/student_dashboard.html', context)
 
@@ -370,11 +373,11 @@ def stationScanEvent(request, station_id):
             
         # Add a new fill record to the StationUsers table, to record that the user scanned their bottle.
         newFillRecord = StationUsers(
-            userID=user.id, waterStationID=station.id, fillTime=datetime.now())
+            userID=user.id, waterStationID=station.id, fillTime=timezone.now())
         newFillRecord.save()
 
     # Redirect to User Portal
-    return render(request, 'envapp/student_dashboard.html')
+    return HttpResponseRedirect(reverse('student_dashboard'))
 
 
 
