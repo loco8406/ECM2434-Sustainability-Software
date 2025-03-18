@@ -32,21 +32,35 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map').setView([50.7374, -3.5352], 16);
+        const map = L.map('map').setView([50.7374, -3.5352], 16);
         var tempMarker = null;
-        var newStation = L.icon({
+        const newStation = L.icon({
             iconUrl: "{% static 'images/waterStation.jpg' %}",
             iconSize: [38, 38],
             });
-
+        var waterStationsLayer = L.layerGroup();
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution: 'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
         }).addTo(map);
 
         {% for station in water_stations %}
-            L.marker([{{ station.latitude }}, {{ station.longitude }}]).addTo(map)
-                .bindPopup("Name: {{ station.name }} - Location description: {{ station.location_description }} - Points: {{ station.points_reward }}");
+            var popUpForm = `
+            <h2>Name: {{ station.name }}<br>Location description: {{ station.location_description }}<br>Points: {{ station.points_reward }}</h2>
+            <form method ="POST" action="{% url 'gamekeeper_map' %}">
+                {% csrf_token %}
+                <input type="hidden" name="station_id" value="{{ station.id }}">
+                <button type="submit" class="btn-primary">Remove</button>
+            </form>`;
+                
+            var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}])
+                .bindPopup(popUpForm)
+                .on("click", function () {
+                    map.flyTo(this.getLatLng(), 17);
+                    });
+            waterStationsLayer.addLayer(marker);
         {% endfor %}
+        waterStationsLayer.addTo(map);
+
         map.on('click', function (e) {
             var lat = e.latlng.lat;
             var lon = e.latlng.lng;
@@ -61,6 +75,7 @@
         document.getElementById("waterStationForm").onsubmit = function (event) {
         event.preventDefault();
         };
+
     </script>
 </body>
 

@@ -343,7 +343,6 @@ def map_view(request):
 
 
 def gamekeeper_map(request):
-
     water_stations = WaterStation.objects.all()
     if request.method == 'POST':  # If the form is submitted
         waterStationForm = WaterStationForm(request.POST)
@@ -354,6 +353,14 @@ def gamekeeper_map(request):
                 'name')  # Get the name field for success message
             messages.success(
                 request, f'Waterstation "{waterStation_name}" created successfully!')
+        elif 'station_id' in request.POST:
+            station_id = request.POST.get('station_id')
+            try:
+                station = WaterStation.objects.get(id=station_id)
+                station.delete()
+                messages.success(request, f'Water station "{station.name}" removed successfully!')
+            except WaterStation.DoesNotExist:
+                messages.error(request, 'Water station not found.')
     else:
         waterStationForm = WaterStationForm()
     return render(request, 'envapp/gamekeeper_map.html',{'water_stations':water_stations,'waterStationForm': waterStationForm})
