@@ -10,21 +10,252 @@
     <title>Register</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
     <div class="form-container">
         <h2>Register</h2>
-        <form method="POST">
+        <form method="POST" onsubmit="return validateConsent()">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn-primary">Sign Up</button>
+
+            <div class="form-check mt-3">
+                <input type="checkbox" id="consentCheckbox" class="form-check-input" onchange="toggleRegisterButton()">
+                <label class="form-check-label">
+                    I agree to the
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal" class="form-GDPR-hyperlink">Terms &
+                        Conditions</a> and
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal"
+                        class="form-GDPR-hyperlink">Privacy Policy</a>.
+                </label>
+
+                <b>
+                    <i>
+                        <p id="consentWarning" class="text-danger mt-2">
+                            You must agree to our Terms & Conditions and Privacy Policy to proceed.
+                        </p>
+                    </i>
+                </b>
+                <button type="submit" id="registerButton" class="btn btn-primary mt-3" disabled>Register</button>
+            </div>
+
         </form>
 
         {% for message in messages %}
         <p class="message">{{ message }}</p>
         {% endfor %}
     </div>
+
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsLabel">Terms & Conditions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <b>
+                        <h1>Terms & Conditions</h1>
+                    </b>
+                    <i>
+                        <p align="right">Last Updated: 04-03-2025</p>
+                    </i>
+                    <p>
+                    <h4>1. Introduction</h4>
+                    Welcome to Sip & Saves. By accessing and using our website, you agree
+                    to comply with these Terms & Conditions. If you do not agree with any part of these terms,
+                    please do not use our services.
+                    <br><br>
+                    <h4>2. Eligibility & Registration</h4>
+                    <ul>
+                        <li>Users must be affiliated with a university in the UK to register.</li>
+                        <li>By registering, you agree to provide accurate information, including your name, email, and
+                            profile picture.</li>
+                        <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
+                    </ul>
+                    <h4>3. Use of Our Services</h4>
+                    <ul>
+                        <li>You may use our platform to track water intake, participate in games, and access interactive
+                            maps.</li>
+                        <li>Location data is only collected when you access the map feature and is not stored.</li>
+                        <li>You agree not to misuse the website by engaging in fraudulent activities or violating any
+                            laws.</li>
+                    </ul>
+                    <h4>4. User Content & Conduct</h4>
+                    <ul>
+                        <li>Any content uploaded (e.g., profile pictures) must not contain offensive or copyrighted
+                            material.</li>
+                        <li>We reserve the right to suspend or delete accounts that violate these terms.</li>
+                    </ul>
+                    <h4>5. Privacy & Data Collection</h4>
+                    <ul>
+                        <li>We collect Name, Email, Profile Picture, Cookies, and IP Address to provide and improve our
+                            services.</li>
+                        <li>Our Privacy Policy explains how we collect, store, and process your personal data in
+                            compliance
+                            with GDPR.</li>
+                    </ul>
+                    <h4>6. Data Deletion Requests</h4>
+                    <ul>
+                        <li>Users can request the deletion of their personal data by contacting us at [Support Email].
+                        </li>
+                        <li>Upon receiving a request, our team will verify the identity of the requester before
+                            processing
+                            the deletion.</li>
+                    </ul>
+                    <h4>7. Limitation of Liability</h4>
+                    <ul>
+                        <li>We are not responsible for any interruptions, data loss, or third-party service failures.
+                        </li>
+                        <li>Our platform is provided “as is” without warranties of any kind.</li>
+                    </ul>
+                    <h4>8. Changes to These Terms</h4>
+                    <ul>
+                        <li>We may update these Terms & Conditions periodically.</li>
+                        <li>Users will be notified of significant changes via email or a notice on our website.</li>
+                    </ul>
+                    <h4>9. Contact Information</h4>
+                    For any questions about these terms, contact us at [Support Email].
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyPolicyLabel">Privacy Policy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <b>
+                        <h1>Privacy Policy</h1>
+                    </b>
+                    <i>
+                        <p align="right">Last Updated: 04-03-2025</p>
+                    </i>
+                    <p>
+                    <h4>1. Introduction</h4>
+                    This Privacy Policy explains how [Website Name] collects, uses, and protects your personal data
+                    in compliance with GDPR (General Data Protection Regulation).
+                    <br><br>
+
+                    <h4>2. Data We Collect</h4>
+                    We collect and process the following data:
+                    <ul>
+                        <li>Personal Information: Name, Email Address, Profile Picture</li>
+                        <li>Technical Information: Cookies, IP Address</li>
+                        <li>Usage Data: Water intake logs, game participation history</li>
+                        <li>Location Data: Only collected when you access the map feature (not stored)</li>
+                    </ul>
+
+                    <h4>3. How We Use Your Data</h4>
+                    We process your personal data for the following purposes:
+                    <ul>
+                        <li>To create and manage your account</li>
+                        <li>To provide core website features (water intake logging, gaming, interactive maps)</li>
+                        <li>To improve user experience and security</li>
+                        <li>To comply with legal obligations</li>
+                    </ul>
+
+                    <h4>4. Legal Basis for Processing</h4>
+                    Under GDPR, we process your data based on:
+                    <ul>
+                        <li>User Consent – When you voluntarily register and provide personal data</li>
+                        <li>Legitimate Interest – To maintain and improve our platform</li>
+                        <li>Legal Compliance – To meet regulatory requirements</li>
+                    </ul>
+
+                    <h4>5. Cookies & Tracking Technologies</h4>
+                    <ul>
+                        <li>We use cookies to enhance functionality and security.</li>
+                        <li>Users can disable cookies in browser settings, but some features may not work properly.</li>
+                    </ul>
+
+                    <h4>6. Data Retention</h4>
+                    <ul>
+                        <li>We retain your data as long as your account is active.</li>
+                        <li>If you request deletion, we will remove your data within 30 days, except where retention is
+                            legally required.</li>
+                    </ul>
+
+                    <h4>7. User Rights Under GDPR</h4>
+                    As a UK-based service, you have the following GDPR rights:
+                    <ul>
+                        <li>Right to Access – Request a copy of your stored data.</li>
+                        <li>Right to Rectification – Update incorrect or incomplete data.</li>
+                        <li>Right to Erasure – Request deletion of personal data.</li>
+                        <li>Right to Restrict Processing – Limit how we use your data.</li>
+                        <li>Right to Object – Opt out of data processing in certain cases.</li>
+                        <li>Right to Data Portability – Receive your data in a structured format.</li>
+                    </ul>
+                    To exercise your rights, contact us at [Support Email].
+
+                    <h4>8. Data Security Measures</h4>
+                    We implement the following security measures to protect your data:
+                    <ul>
+                        <li>Encryption for data storage and transmission</li>
+                        <li>Access controls to limit unauthorized access</li>
+                        <li>Regular security audits to ensure compliance</li>
+                    </ul>
+
+                    <h4>9. Data Deletion Requests</h4>
+                    Users can request account and data deletion by emailing [Support Email]. Our team will verify
+                    identity before processing the request.
+
+                    <h4>10. Third-Party Services</h4>
+                    We may share data with trusted third-party services for hosting, analytics, and security. These
+                    providers comply with GDPR regulations.
+
+                    <h4>11. Changes to This Privacy Policy</h4>
+                    We may update this Privacy Policy from time to time. Users will be notified of any major
+                    changes.
+
+                    <h4>12. Contact Information</h4>
+                    For privacy-related inquiries, contact us at [Support Email].
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleRegisterButton() {
+            let checkbox = document.getElementById("consentCheckbox");
+            let registerButton = document.getElementById("registerButton");
+            let consentWarning = document.getElementById("consentWarning");
+
+            if (checkbox.checked) {
+                registerButton.disabled = false;
+                consentWarning.style.display = "none";
+            } else {
+                registerButton.disabled = true;
+                consentWarning.style.display = "block";
+            }
+        }
+
+        function validateConsent() {
+            let checkbox = document.getElementById("consentCheckbox");
+            let consentWarning = document.getElementById("consentWarning");
+
+            if (!checkbox.checked) {
+                consentWarning.style.display = "block";
+                return false;
+            }
+            return true;
+        }
+    </script>
+
 </body>
 
 </html>

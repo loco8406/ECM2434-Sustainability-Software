@@ -11,7 +11,6 @@
   <title>Student Portal - Plastic Waste Tracker</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <script>
     function getCookie(name) {
@@ -33,17 +32,14 @@
 
 <body>
   <div class="container mt-5">
-    <!-- Removed text-center classes -->
     <h1>Welcome, {{ user.username }}!</h1>
     <p>Track how much plastic waste you're preventing from going into landfills by refilling your reusable bottle.</p>
 
     <h3 class="mt-4">
-      🌱 Plastic Waste Prevented: <strong>{{ user.points }} Points</strong>
+      💧 Water Collected: <strong>{{ user.points }} Droplets</strong>
     </h3>
 
-    <!-- Progress Tracker -->
     <div class="progress-container">
-      <p class="text-muted">Progress to next level: {{ user.points }}/{{ level_goal }} points</p>
       <div class="progress">
         <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%"
           aria-valuenow="{{ user.points }}" aria-valuemin="0" aria-valuemax="{{ level_goal }}">
@@ -53,11 +49,11 @@
     </div>
 
 
-    <h2 class="mt-4">📌 Track Your Refills</h2>
+    <h2 class="mt-4">🍶 Refill your Bottle!</h2>
     <ul class="list-group">
       <li class="list-group-item">
         Refill Your Bottle at a Water Station 💧 -
-        <button onclick = "goToScanPage()" class="btn btn-success btn-sm">Log Refill</button>
+        <button onclick="goToScanPage()" class="btn btn-success btn-sm">Log Refill</button>
       </li>
       <li class="list-group-item">
         Encourage a Friend to Use a Reusable Bottle 👥 -
@@ -65,19 +61,30 @@
         <span id="referral_code" class="ms-2 text-muted"></span>
       </li>
       <li class="list-group-item">
-        Use a Reusable Cup Instead of a Plastic One ☕ -
-        <button class="btn btn-success btn-sm">Log Action</button>
+        Use your droplets and play Bottle Bounce! 🎮 -
+        <button onclick="goToBottleBounce()" class="btn btn-success btn-sm">Play!</button>
       </li>
     </ul>
 
     <h2 class="mt-4">✅ Completed Actions</h2>
     <ul class="list-group">
-      <li class="list-group-item text-muted">
-        Refilled Bottle at Campus Water Fountain 💧 - Logged
-      </li>
-      <li class="list-group-item text-muted">
-        Used a Metal Straw Instead of Plastic 🥤 - Logged
-      </li>
+        {% if refills.exists %}
+            {% for refill in refills %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-success">💧</span>
+                            <span class="ms-2">Refilled at Station #{{ refill.waterStationID }}</span>
+                        </div>
+                        <small class="text-muted">{{ refill.get_formatted_date }}</small>
+                    </div>
+                </li>
+            {% endfor %}
+        {% else %}
+                <li class="list-group-item text-center text-muted">
+                    <p class="mb-0">No refills logged yet. Visit a water station to get started! 💧</p>
+                </li>
+        {% endif %}
     </ul>
   </div>
 
@@ -86,10 +93,15 @@
   </footer>
 
   <script>
-	function goToScanPage(){
-		document.location.href = "{% url 'scanQR' %}"
-	}
-   
+    function goToScanPage() {
+      document.location.href = "{% url 'scanQR' %}"
+    }
+	
+	// Function to redirect to bottle bounce game
+	function goToBottleBounce() {
+      document.location.href = "{% url 'sippyBottle' %}"
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
       const generateButton = document.getElementById('getCode');
       if (generateButton) {

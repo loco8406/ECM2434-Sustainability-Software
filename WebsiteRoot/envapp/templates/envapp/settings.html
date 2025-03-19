@@ -11,7 +11,8 @@
     <title>Settings - Sustainability App</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
@@ -19,38 +20,108 @@
         <h1 class="text-center">Settings</h1>
         <p class="text-center">Update your personal settings.</p>
 
-        <form class="mt-4 position-relative">
-            <!-- Display Name (Editable) -->
-            <div class="mb-3">
-                <label for="display-name" class="form-label">Display Name</label>
-                <input type="text" class="form-control" id="display-name" value="Student123">
+        <div class="mb-3 text-center">
+            <label for="avatar" class="form-label">Profile Picture</label>
+            <div class="profile-picture-container" style="max-width: 150px; margin: auto;">
+                <img id="profilePicture"
+                    src="{% if user.profile_picture and user.profile_picture.url != '/media/profile_pics/default_profile_pic.png' %}{{ user.profile_picture.url }}{% else %}{{ MEDIA_URL }}profile_pics/default_profile_pic.png{% endif %}"
+                    alt="Profile Picture" class="profile-img">
             </div>
 
-            <!-- Email (Read-Only with Tooltip) -->
+            <div class="profile-actions">
+                <label for="avatar" class="custom-file-upload btn-exeter">Choose New Picture</label>
+                <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
+                <button type="button" id="removeProfilePicture" class="btn-exeter-danger">Remove Picture</button>
+            </div>
+        </div>
+
+        <div id="imageCropModal" class="modal fade" tabindex="-1" aria-labelledby="imageCropModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Adjust Your Profile Picture</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div style="width: 100%; max-width: 450px; margin: auto;">
+                            <img id="cropImagePreview" src="" style="max-width: 100%; display: block;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn-exeter" id="confirmCrop">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="removeProfileModal" class="modal fade" tabindex="-1" aria-labelledby="removeProfileModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Remove Profile Picture</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p>Are you sure you want to remove your profile picture?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn-exeter-danger" id="confirmRemoveProfile">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert alert-danger custom-error alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" class="mt-4 position-relative">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="full-name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="full-name" name="full_name"
+                    value="{% if full_name %}{{ full_name }}{% else %}No Name Provided{% endif %}" readonly>
+
+                <div>
+                    (Your name cannot be changed)
+                </div>
+            </div>
+
             <div class="mb-3 position-relative">
                 <label for="email" class="form-label">Email Address</label>
                 <input type="email" class="form-control email-field" id="email" value="student@example.com" readonly
                     onmouseover="showTooltip()" onmouseout="hideTooltip()">
                 <div>
-                    You cannot change your email.
+                    (You cannot change your email)
                 </div>
             </div>
 
-            <!-- Password Change (Optional) -->
             <div class="mb-3">
                 <label for="password" class="form-label">New Password (Optional)</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter new password">
-            </div>
-
-            <!-- Profile Picture Upload -->
-            <div class="mb-3">
-                <label for="avatar" class="form-label">Profile Picture</label>
-                <input type="file" class="form-control" id="avatar">
+                <input type="password" class="form-control" id="password" name="password"
+                    placeholder="Enter new password">
             </div>
 
             <div class="text-center">
                 <button type="submit" class="btn btn-success">Save Changes</button>
-                <a href="student_dashboard.html" class="btn btn-secondary">Cancel</a>
+                <a href="student_dashboard" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
@@ -59,6 +130,115 @@
         <p>© 2025 Sustainability App | Promoting a Green Campus</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const avatarInput = document.getElementById("avatar");
+            const cropImagePreview = document.getElementById("cropImagePreview");
+            const confirmCropButton = document.getElementById("confirmCrop");
+            const modalElement = document.getElementById("imageCropModal");
+            const profilePicture = document.getElementById("profilePicture");
+            const removeButton = document.getElementById("removeProfilePicture");
+            const confirmRemoveButton = document.getElementById("confirmRemoveProfile");
+            const removeProfileModal = new bootstrap.Modal(document.getElementById("removeProfileModal"));
+
+            let cropper;
+            const modal = new bootstrap.Modal(modalElement);
+
+            modalElement.addEventListener('shown.bs.modal', function () {
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(cropImagePreview, {
+                    aspectRatio: 1,
+                    viewMode: 2,
+                    autoCropArea: 1,
+                    responsive: true,
+                    minContainerWidth: 450,
+                    minContainerHeight: 450,
+                });
+            });
+
+            avatarInput.addEventListener("change", function (event) {
+                const file = event.target.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        cropImagePreview.src = e.target.result;
+                        modal.show();
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            confirmCropButton.addEventListener("click", function () {
+                if (!cropper) {
+                    alert("Error: Cropper.js not initialized!");
+                    return;
+                }
+
+                cropper.getCroppedCanvas({ width: 400, height: 400 }).toBlob((blob) => {
+                    if (!blob) {
+                        alert("Error: Could not create cropped image.");
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append("avatar", blob, "profile_picture.jpg");
+
+                    fetch("{% url 'update_profile_picture' %}", {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload();
+                            } else {
+                                alert("Failed to update profile picture.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("An error occurred while uploading the image.");
+                        });
+                }, "image/jpeg");
+            });
+
+            removeButton.addEventListener("click", function () {
+                removeProfileModal.show();
+            });
+
+            confirmRemoveButton.addEventListener("click", function () {
+                fetch("{% url 'remove_profile_picture' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert("Failed to remove profile picture.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("An error occurred while removing the image.");
+                    });
+            });
+
+        });
+    </script>
 </body>
 
 </html>

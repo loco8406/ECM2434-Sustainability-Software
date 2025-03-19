@@ -9,6 +9,8 @@ import string
 def generate_code(length=8):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
+# Creation of the challenge model
+
 
 class Challenge(models.Model):
     title = models.CharField(max_length=200)  # Challenge title
@@ -16,50 +18,74 @@ class Challenge(models.Model):
     location = models.TextField()
     challenge_date = models.DateTimeField()
     points_reward = models.IntegerField(default=0)
-    created_at = models.DateTimeField(
-        auto_now_add=True)  # Timestamp when created
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
 
 class UserTable(AbstractUser):
-    # This extends the included User model
     role = models.CharField(max_length=30, default='user')
-    # Keeps track of this user's points
     points = models.IntegerField(default=0)
     referral_code = models.CharField(
         max_length=10, blank=True, null=True, unique=True)
+    profile_picture = models.ImageField(
+        upload_to='profile_pics/', blank=True, null=True)
+    consent_timestamp = models.DateTimeField(auto_now_add=True)
+    fuelRemaining = models.IntegerField(default=0)
+    
+    bottle_size = models.CharField(
+        max_length=10,
+        choices=[
+            ("500ml", "500ml"),
+            ("750ml", "750ml"),
+            ("1000ml", "1L"),
+            ("1500ml", "1.5L"),
+            ("2000ml", "2L"),
+        ],
+        default="750ml"
+    )
 
-    # Returns the role of the user
+    def get_bottle_size(self):
+        return self.bottle_size
 
+    bottle_size = models.CharField(
+        max_length=10,
+        choices=[
+            ("500ml", "500ml"),
+            ("750ml", "750ml"),
+            ("1000ml", "1L"),
+            ("1500ml", "1.5L"),
+            ("2000ml", "2L"),
+        ],
+        default="750ml"
+    )
+
+    def get_bottle_size(self):
+        return self.bottle_size
+        
     def getRole(self):
         return self.role
 
-    # Returns the number of points
     def getPoints(self):
         return self.points
 
-    # Sets the role of the user
     def setRole(self, newRole):
         self.role = newRole
         self.save()
 
-    # Overrides the current points value a new one (SHOULD NOT BE USED EXCEPT FOR ADMIN FUNCTIONS, OTHERWISE USE addPoints/subtractPoints)
     def setPoints(self, newPoints):
         self.points = newPoints
         self.save()
 
-    # Increases the points by a specified amount
     def addPoints(self, pointsScored):
         self.points += pointsScored
         self.save()
 
-    # Decreases the points by a specified amount (Unsure of use case yet, perhaps for ADMIN?)
     def subtractPoints(self, pointsLost):
         self.points -= pointsLost
         self.save()
-
+        
     def getCode(self):
         """Generate and save a referral code if one does not already exist."""
         if not self.referral_code:
@@ -92,6 +118,22 @@ class VideoWatchers(models.Model):
 
 class WaterStation(models.Model):
     name = models.CharField(max_length=200)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
     location_description = models.TextField()
-    location = models.TextField()
     points_reward = models.IntegerField(default=0)
+
+
+class StationUsers(models.Model):
+    # Stores the user ID of the user who has used the Water Station
+    userID = models.IntegerField()
+    # Stores the ID of the water station that has been used
+    waterStationID = models.IntegerField()
+    # Automatically adds the date the station has been used
+    fillTime = models.DateTimeField(auto_now_add=True)
+
+    def get_formatted_date(self):
+        return self.fillTime.strftime("%B %d, %Y at %I:%M %p")
+
+    class Meta:
+        ordering = ['-fillTime']
