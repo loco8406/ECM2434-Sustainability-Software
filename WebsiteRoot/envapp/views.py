@@ -35,8 +35,7 @@ def register(request):
         if form.is_valid():
             # Create user object but don't save yet
             user = form.save(commit=False)
-            user.bottle_size = form.cleaned_data.get('bottle_size')
-
+            user.bottle_size = form.cleaned_data.get('bottle_size')  # Save bottle size
             # Save user to database, which will auto-set consent_timestamp
             user.save()
 
