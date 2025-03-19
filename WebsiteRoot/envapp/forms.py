@@ -22,6 +22,21 @@ class WaterStationForm(forms.ModelForm):
 
 
 class CustomUserCreationForm(UserCreationForm):
+    BOTTLE_SIZE_CHOICES = [
+        ("500ml", "500ml"),
+        ("750ml", "750ml"),
+        ("1000ml", "1L"),
+        ("1500ml", "1.5L"),
+        ("2000ml", "2L"),
+    ]
+
+    bottle_size = forms.ChoiceField(
+        choices=BOTTLE_SIZE_CHOICES,
+        required=True,
+        label="Estimated Bottle Size",
+        help_text="Select the size of your reusable bottle."
+    )
+    
     input_referral_code = forms.CharField(
         required=False,
         max_length=10,
@@ -46,4 +61,4 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = UserTable
         fields = ["username", "password1", "password2",
-                  "first_name", "last_name", "email","bottle_size"]
+                  "first_name", "last_name", "email", "bottle_size"]

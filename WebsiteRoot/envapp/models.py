@@ -49,6 +49,21 @@ class UserTable(AbstractUser):
     def get_bottle_size(self):
         return self.bottle_size
 
+    bottle_size = models.CharField(
+        max_length=10,
+        choices=[
+            ("500ml", "500ml"),
+            ("750ml", "750ml"),
+            ("1000ml", "1L"),
+            ("1500ml", "1.5L"),
+            ("2000ml", "2L"),
+        ],
+        default="750ml"
+    )
+
+    def get_bottle_size(self):
+        return self.bottle_size
+        
     def getRole(self):
         return self.role
 
