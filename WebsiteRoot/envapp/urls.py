@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-
+from .views import gamekeeper_map, map_view, report_water_station, reset_report
 
 urlpatterns = [
     # HOME PAGE URL
@@ -42,6 +42,8 @@ urlpatterns = [
     # Map URLs
     path('gamekeeper_map/', views.gamekeeper_map, name='gamekeeper_map'),
     path('map/', views.map_view, name='map'),  # Main page with map
+    path('report_water_station/<int:station_id>/', report_water_station, name='report_water_station'),
+    path('reset_report/<int:station_id>/', reset_report, name='reset_report'),
     
     # GAME URLs
     path('sippyBottle/', views.sippyBottle, name='sippyBottle'),

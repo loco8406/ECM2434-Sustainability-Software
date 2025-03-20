@@ -1,7 +1,6 @@
 {% include 'envapp/navbar.html' %}
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,41 +15,68 @@
 
 <body>
     <h2>Interactive Map</h2>
-    <div id="map"></div>
+    <div id="map" style="height: 500px;"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        const map = L.map('map');
-        map.locate({setView: true,maxZoom: 16})
-        const profilePic ="{% if request.user.profile_picture and request.user.profile_picture.url != '/media/profile_pics/default_profile_pic.png' %}{{ request.user.profile_picture.url }}{% else %}{{ MEDIA_URL }}profile_pics/default_profile_pic.png{% endif %}"
+        const map = L.map('map').setView([50.7374, -3.5352], 16);
+        map.locate({setView: true, maxZoom: 16});
+
+        // ✅ Handle user profile picture for marker
+        const profilePic = "{% if request.user.profile_picture and request.user.profile_picture.url != '/media/profile_pics/default_profile_pic.png' %}{{ request.user.profile_picture.url }}{% else %}{{ MEDIA_URL }}profile_pics/default_profile_pic.png{% endif %}";
         var userProfile = L.icon({
             iconUrl: profilePic,
             iconSize: [30, 30],
-            });
+        });
+
         var waterStationsLayer = L.layerGroup();
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
+            attribution: 'Map data: © OpenStreetMap contributors'
         }).addTo(map);
 
+        // ✅ Show user location marker
         function markUserLocation(e) {
-            L.marker(e.latlng,{icon:userProfile}).addTo(map)
+            L.marker(e.latlng, { icon: userProfile }).addTo(map)
                 .bindPopup("You are here").openPopup();
         }
 
         map.on('locationfound', markUserLocation);
-        function onLocationError(e) {
-        alert(e.message);
-        }
-        {% for station in water_stations %}
-            var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}]).addTo(map)
-                .bindPopup("Name: {{ station.name }} - Location description: {{ station.location_description }} - Points: {{ station.points_reward }}")
-                .on("click", function () {
-                map.flyTo(this.getLatLng(), 18);
-                });
-            waterStationsLayer.addLayer(marker);
 
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
+        // ✅ Loop through all water stations and add them to the map
+        {% for station in water_stations %}
+            var stationImage = `{% if station.photo %}<img src="{{ station.photo.url }}" width="100" style="border-radius: 10px;">{% else %}<span class="text-muted">No Image Available</span>{% endif %}`;
+
+            // ✅ Show "Not Working" status if reported too many times
+            var stationStatus = `{% if not station.is_working %}<span class="badge bg-danger">🚨 Not Working</span>{% else %}<span class="badge bg-success">✅ Working</span>{% endif %}`;
+
+            var popupContent = `
+                <h3>{{ station.name }}</h3>
+                <p><strong>Location:</strong> {{ station.location_description }}</p>
+                <p><strong>Points:</strong> {{ station.points_reward }}</p>
+                <p><strong>Status:</strong> ${stationStatus}</p>
+                ${stationImage}
+                
+                <form method="POST" action="{% url 'report_water_station' station.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning btn-sm mt-2">Report Not Working</button>
+                </form>
+            `;
+
+            var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}])
+                .bindPopup(popupContent)
+                .on("click", function () {
+                    map.flyTo(this.getLatLng(), 18);
+                });
+
+            waterStationsLayer.addLayer(marker);
         {% endfor %}
-    waterStationsLayer.addTo(map);
+
+        waterStationsLayer.addTo(map);
     </script>
 
 </body>
