@@ -47,9 +47,12 @@ class UserTable(AbstractUser):
     )
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     def get_bottle_size(self):
         return self.bottle_size
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     bottle_size = models.CharField(
@@ -62,7 +65,11 @@ class UserTable(AbstractUser):
             ("2000ml", "2L"),
         ],
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         default="750ml"
+=======
+        default="500ml"
+>>>>>>> Stashed changes
 =======
         default="500ml"
 >>>>>>> Stashed changes
@@ -71,7 +78,11 @@ class UserTable(AbstractUser):
     def get_bottle_size(self):
         return self.bottle_size
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes

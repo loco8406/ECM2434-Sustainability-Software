@@ -62,6 +62,10 @@ class CustomUserCreationForm(UserCreationForm):
         help_text="Select the size of your reusable bottle."
     )
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -70,7 +74,11 @@ class CustomUserCreationForm(UserCreationForm):
         model = UserTable
         fields = ["username", "password1", "password2",
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                   "first_name", "last_name", "email", "bottle_size"]
+=======
+                  "first_name", "last_name", "email","bottle_size"]
+>>>>>>> Stashed changes
 =======
                   "first_name", "last_name", "email","bottle_size"]
 >>>>>>> Stashed changes
