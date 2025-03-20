@@ -391,7 +391,7 @@ def map_view(request):
 def gamekeeper_map(request):
     water_stations = WaterStation.objects.all()
     if request.method == 'POST':  # If the form is submitted
-        waterStationForm = WaterStationForm(request.POST)
+        waterStationForm = WaterStationForm(request.POST, request.FILES)
         if waterStationForm.is_valid():  # Handles waterstation form if submited
             # Save and store the waterstation instance
             waterStation = waterStationForm.save()
@@ -399,6 +399,8 @@ def gamekeeper_map(request):
                 'name')  # Get the name field for success message
             messages.success(
                 request, f'Waterstation "{waterStation_name}" created successfully!')
+
+            return redirect('gamekeeper_map')
         elif 'station_id' in request.POST:
             station_id = request.POST.get('station_id')
             try:
@@ -432,3 +434,23 @@ def updatePointsEvent(request, newPointValue):
         user.save()
         
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
+
+def report_water_station(request, station_id):
+    station = get_object_or_404(WaterStation, id=station_id)
+    
+    station.reports += 1
+    if station.reports >= 2:  # If a station has 2 or more reports, mark as "Not Working"
+        station.is_working = False
+
+    station.save()
+
+    messages.warning(request, f"Water station '{station.name}' has been reported as NOT WORKING.")
+    return redirect('map') 
+
+def reset_report(request, station_id):
+    station = get_object_or_404(WaterStation, id=station_id)
+    station.reports = 0  # Reset the report count
+    station.is_working = True  # Set station back to working
+    station.save()
+    messages.success(request, f"Reports for '{station.name}' have been reset.")
+    return redirect('gamekeeper_map')

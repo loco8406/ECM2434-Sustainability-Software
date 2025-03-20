@@ -18,7 +18,11 @@ class WaterStationForm(forms.ModelForm):
     class Meta:
         model = WaterStation
         fields = ['name', 'latitude', 'longitude',
-                  'location_description', 'points_reward']
+                  'location_description', 'points_reward','photo']
+        photo = forms.ImageField(required=False)
+        widgets = {
+            "location_description": forms.Textarea(attrs={"rows": 3}),
+        }
 
 
 class CustomUserCreationForm(UserCreationForm):

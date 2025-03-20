@@ -122,6 +122,11 @@ class WaterStation(models.Model):
     longitude = models.FloatField()
     location_description = models.TextField()
     points_reward = models.IntegerField(default=0)
+    photo = models.ImageField(upload_to='water_station_photos/', blank=True, null=True)
+    is_working = models.BooleanField(default=True)
+    reports = models.IntegerField(default=0)
+    def __str__(self):
+        return f"{self.name} - {'Working' if self.is_working else 'Not Working'}"
 
 
 class StationUsers(models.Model):
