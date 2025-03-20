@@ -108,45 +108,58 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
+        const workingStation = L.icon({
+            iconUrl: "{% static 'images/blue-marker.png' %}",
+            iconSize: [38, 38],
+        });
+        const notWorkingStation = L.icon({
+            iconUrl: "{% static 'images/red-marker.png' %}",
+            iconSize: [38, 38],
+        });
         const map = L.map('map').setView([50.7374, -3.5352], 16);
         var tempMarker = null;
         const newStation = L.icon({
-            iconUrl: "{% static 'images/waterStation.jpg' %}",
+            iconUrl: "{% static 'images/green-marker.png' %}",
             iconSize: [38, 38],
         });
         var waterStationsLayer = L.layerGroup();
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data: © OpenStreetMap contributors'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        {% for station in water_stations %}
-            var stationImage = `{% if station.photo %}<img src="{{ station.photo.url }}" width="150" style="border-radius: 10px;">{% else %}<span class="text-muted">No Image Available</span>{% endif %}`;
+// ✅ Loop through all water stations and add them to the map
+{% for station in water_stations %}
+    var stationImage = `{% if station.photo %}<img src="{{ station.photo.url }}" width="100" style="border-radius: 10px;">{% else %}<span class="text-muted">No Image Available</span>{% endif %}`;
 
-            var stationStatus = `{% if station.is_working %}<span class="badge bg-success">✅ Working</span>{% else %}<span class="badge bg-danger">🚨 Not Working</span>{% endif %}`;
+    var stationStatus = `{% if not station.is_working %}<span class="badge bg-danger">🚨 Not Working</span>{% else %}<span class="badge bg-success">✅ Working</span>{% endif %}`;
 
-            var popUpForm = `
-            <h2>Name: {{ station.name }}</h2>
-            <p>Location: {{ station.location_description }}</p>
-            <p><strong>Points:</strong> {{ station.points_reward }}</p>
-            <p><strong>Status:</strong> ${stationStatus}</p>
-            ${stationImage}
+    var popupContent = `
+        <h3>{{ station.name }}</h3>
+        <p><strong>Location:</strong> {{ station.location_description }}</p>
+        <p><strong>Points:</strong> {{ station.points_reward }}</p>
+        <p><strong>Status:</strong> ${stationStatus}</p>
+        ${stationImage}
+        
+        <form method="POST" action="{% url 'report_water_station' station.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning btn-sm mt-2">Report Not Working</button>
+        </form>
+    `;
 
-            <form method="POST" action="{% url 'gamekeeper_map' %}">
-                {% csrf_token %}
-                <input type="hidden" name="station_id" value="{{ station.id }}">
-                <button type="submit" class="btn btn-danger btn-sm mt-2">Remove</button>
-            </form>`;
+    var stationIcon = {% if not station.is_working %} notWorkingStation {% else %} workingStation {% endif %};
 
-            var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}])
-                .bindPopup(popUpForm)
-                .on("click", function () {
-                    map.flyTo(this.getLatLng(), 17);
-                });
+    var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}], { icon: stationIcon })
+        .bindPopup(popupContent)
+        .on("click", function () {
+            map.flyTo(this.getLatLng(), 18);
+        });
 
-            waterStationsLayer.addLayer(marker);
-        {% endfor %}
-        waterStationsLayer.addTo(map);
+    waterStationsLayer.addLayer(marker);
+{% endfor %}
+
+waterStationsLayer.addTo(map);
+
 
         map.on('click', function (e) {
             var lat = e.latlng.lat;

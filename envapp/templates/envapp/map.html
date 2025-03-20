@@ -20,9 +20,16 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         const map = L.map('map').setView([50.7374, -3.5352], 16);
+        const workingStation = L.icon({
+            iconUrl: "{% static 'images/blue-marker.png' %}",
+            iconSize: [38, 38],
+        });
+        const notWorkingStation = L.icon({
+            iconUrl: "{% static 'images/red-marker.png' %}",
+            iconSize: [38, 38],
+        });
         map.locate({setView: true, maxZoom: 16});
 
-        // ✅ Handle user profile picture for marker
         const profilePic = "{% if request.user.profile_picture and request.user.profile_picture.url != '/media/profile_pics/default_profile_pic.png' %}{{ request.user.profile_picture.url }}{% else %}{{ MEDIA_URL }}profile_pics/default_profile_pic.png{% endif %}";
         var userProfile = L.icon({
             iconUrl: profilePic,
@@ -32,10 +39,9 @@
         var waterStationsLayer = L.layerGroup();
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data: © OpenStreetMap contributors'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // ✅ Show user location marker
         function markUserLocation(e) {
             L.marker(e.latlng, { icon: userProfile }).addTo(map)
                 .bindPopup("You are here").openPopup();
@@ -47,11 +53,9 @@
             alert(e.message);
         }
 
-        // ✅ Loop through all water stations and add them to the map
         {% for station in water_stations %}
             var stationImage = `{% if station.photo %}<img src="{{ station.photo.url }}" width="100" style="border-radius: 10px;">{% else %}<span class="text-muted">No Image Available</span>{% endif %}`;
 
-            // ✅ Show "Not Working" status if reported too many times
             var stationStatus = `{% if not station.is_working %}<span class="badge bg-danger">🚨 Not Working</span>{% else %}<span class="badge bg-success">✅ Working</span>{% endif %}`;
 
             var popupContent = `
@@ -67,8 +71,12 @@
                 </form>
             `;
 
-            var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}])
-                .bindPopup(popupContent)
+            var marker = L.marker([
+                {{ station.latitude }}, 
+                {{ station.longitude }}
+            ], {
+                icon: {% if not station.is_working %}notWorkingStation{% else %}workingStation{% endif %}
+            }).bindPopup(popupContent)
                 .on("click", function () {
                     map.flyTo(this.getLatLng(), 18);
                 });
