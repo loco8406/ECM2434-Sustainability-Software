@@ -61,8 +61,16 @@ class CustomUserCreationForm(UserCreationForm):
         label="Estimated Bottle Size",
         help_text="Select the size of your reusable bottle."
     )
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
     class Meta:
         model = UserTable
         fields = ["username", "password1", "password2",
+<<<<<<< Updated upstream
                   "first_name", "last_name", "email", "bottle_size"]
+=======
+                  "first_name", "last_name", "email","bottle_size"]
+>>>>>>> Stashed changes
