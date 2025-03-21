@@ -36,13 +36,17 @@
     <p>Track how much plastic waste you're preventing from going into landfills by refilling your reusable bottle.</p>
 
     <h3 class="mt-4">
-      💧 Water Collected: <strong>{{ user.points }} Droplets</strong>
+      🏆 Total Points: <strong>{{ user.points }} Points</strong>
     </h3>
+	<h3 class="mt-4">
+      💧 Water Collected: <strong>{{ user.fuelRemaining }} Droplets</strong>
+    </h3>
+	<p><i>Collect water from Filling Stations and use them to play Bottle Bounce!</i></p>
 
     <div class="progress-container">
       <div class="progress">
         <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%"
-          aria-valuenow="{{ user.points }}" aria-valuemin="0" aria-valuemax="{{ level_goal }}">
+          aria-valuenow="{{ user.fuelRemaining }}" aria-valuemin="0" aria-valuemax="{{ level_goal }}">
           {{ progress_percentage }}%
         </div>
       </div>

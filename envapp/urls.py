@@ -47,9 +47,9 @@ urlpatterns = [
     
     # GAME URLs
     path('sippyBottle/', views.sippyBottle, name='sippyBottle'),
-    path('api/points/', views.getUserPoints, name='getUserPoints'),
+    path('api/fuel/', views.getFuel, name='getFuel'),
     path('pointUpdate/<int:newPointValue>/',
-         views.updatePointsEvent, name='updatePointsEvent'),
+         views.updateFuelEvent, name='updateFuelEvent'),
 ]
 
 if settings.DEBUG:

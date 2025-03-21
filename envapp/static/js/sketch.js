@@ -85,7 +85,7 @@ function setup() {
   birdImg = bottleImg
   
   // Get fuel value from user
-  fetch('/api/fuel/')
+  fetch('/api/points/')
     .then(response => {
       if (!response.ok) {
         throw new Error('No response!!');

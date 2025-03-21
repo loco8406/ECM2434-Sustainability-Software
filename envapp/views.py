@@ -377,7 +377,7 @@ def stationScanEvent(request, station_id):
         newFillRecord.save()
 
     # Redirect to User Portal
-    return HttpResponseRedirect(reverse('student_dashboard'))
+    return render(request, 'envapp/scanSuccess.html', {'pointsGained': station.points_reward})
 
 
 
@@ -420,17 +420,17 @@ def sippyBottle(request):
     return render(request, 'envapp/sippyBottle.html')
     
 @login_required
-def getUserPoints(request):
+def getFuel(request):
     user = request.user
-    return JsonResponse({'points': user.points})
+    return JsonResponse({'points': user.fuelRemaining})
 
 @login_required    
-def updatePointsEvent(request, newPointValue):
+def updateFuelEvent(request, newPointValue):
     user = request.user # Get the current User
     
-    # Check that the point value isn't being increased to prevent cheating via URL
-    if newPointValue < user.points:
-        user.points = newPointValue # Set new point value
+    # Check that the fuel value isn't being increased to prevent cheating via URL
+    if newPointValue < user.fuelRemaining:
+        user.fuelRemaining = newPointValue # Set new point value
         user.save()
         
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
