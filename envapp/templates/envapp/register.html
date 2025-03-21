@@ -39,7 +39,9 @@
                 </b>
                 <button type="submit" id="registerButton" class="btn btn-primary mt-3" disabled>Register</button>
             </div>
-
+            <p class="redirect-link">
+                Already have an account? <a href="{% url 'login' %}">Login here</a>
+            </p>
         </form>
 
         {% for message in messages %}
