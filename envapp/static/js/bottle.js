@@ -1,14 +1,14 @@
 function Bird() {
-  this.y = 300;
-  this.x = 64;
+  this.y = 300 * scaleFactor;
+  this.x = 64 * scaleFactor;
 
-  this.gravity = 0.7;
-  this.lift = -12;
-  this.velocity = -12;
+  this.gravity = 0.7 * scaleFactor;
+  this.lift = -12 * scaleFactor;
+  this.velocity = -12 * scaleFactor;
 
   this.show = function() {
     fill(255);
-    image(birdImg, this.x, this.y, 56, 48);
+    image(birdImg, this.x, this.y, 56 * scaleFactor, 48 * scaleFactor);
   };
 
   this.up = function() {
@@ -21,8 +21,8 @@ function Bird() {
     // this.velocity *= 0.9;
     this.y += this.velocity;
 
-    if (this.y > 721) {
-      this.y = 721;
+    if (this.y > height - 79 * scaleFactor) {
+      this.y = height - 79 * scaleFactor;
       this.velocity = 0;
     }
 

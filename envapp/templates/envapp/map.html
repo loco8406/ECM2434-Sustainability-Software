@@ -23,11 +23,11 @@
         const workingStation = L.icon({
             iconUrl: "{% static 'images/blue-marker.png' %}",
             iconSize: [38, 38],
-        });
+            });
         const notWorkingStation = L.icon({
             iconUrl: "{% static 'images/red-marker.png' %}",
             iconSize: [38, 38],
-        });
+            });
         map.locate({setView: true, maxZoom: 16});
 
         const profilePic = "{% if request.user.profile_picture and request.user.profile_picture.url != '/media/profile_pics/default_profile_pic.png' %}{{ request.user.profile_picture.url }}{% else %}{{ MEDIA_URL }}profile_pics/default_profile_pic.png{% endif %}";
@@ -39,7 +39,7 @@
         var waterStationsLayer = L.layerGroup();
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>contributors'
         }).addTo(map);
 
         function markUserLocation(e) {

@@ -1,24 +1,24 @@
 function Pipe() {
   if (difficultySetting == 1){
-    this.speed = 6;
-    this.spacing = 350;
+    this.speed = 6 * scaleFactor;
+    this.spacing = 350 * scaleFactor;
   }
   else if (difficultySetting == 2){
-    this.speed = 7;
-    this.spacing = 300;
+    this.speed = 7 * scaleFactor;
+    this.spacing = 300 * scaleFactor;
   }
   else if (difficultySetting == 3){
-    this.speed = 8;
-    this.spacing = 250;
+    this.speed = 8 * scaleFactor;
+    this.spacing = 250 * scaleFactor;
   }
   else if (difficultySetting == 4){
-    this.speed = 12;
-    this.spacing = 100;
+    this.speed = 12 * scaleFactor;
+    this.spacing = 100 * scaleFactor;
   }
-  this.top = random(height / 6, (3 / 4) * height);
+  this.top = random(height / 6, (3 / 4) * height) * scaleFactor;
   this.bottom = height - (this.top + this.spacing);
   this.x = width;
-  this.w = 80;
+  this.w = 80  * scaleFactor;
   this.passed = false
 
   this.highlight = false;

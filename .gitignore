@@ -1,7 +1,6 @@
 venv/
-
-/Sip&Save/__pycache__
-/envapp/__pycache__
 .idea
-/Sip&Save/__pycache__/urls.cpython-310.pyc
 /db.sqlite3
+/envapp/__pycache__
+/Sip&Save/__pycache__
+/Sip&Save/__pycache__/urls.cpython-310.pyc

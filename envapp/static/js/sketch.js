@@ -28,6 +28,7 @@ var birdColour = ["Yellow", "Blue", "Red", "Black", "Green"]
 var birdColourSetting = ["1"]
 var showMenu = true
 var fuel = 0
+var scaleFactor
 
 // Stores High Score in a Cookie
 function setHighScoreCookie(score) {
@@ -57,16 +58,23 @@ function preload() {
   pointSound = loadSound(staticPath + "sounds/point")
   flapSound = loadSound(staticPath + 'sounds/flap')
   swooshSound = loadSound(staticPath + "sounds/swoosh")
-  backgroundDayImg = loadImage(staticPath + "background.png")
-  groundDayImg = loadImage(staticPath + "floor.png")
-  pipeImg = loadImage(staticPath + "pipe.png")
-  pipeendImg = loadImage(staticPath + "pipeend.png")
-  bottleImg = loadImage(staticPath + "bottle.png")
-  uiFont = loadFont(staticPath + "uifont.ttf")
+  backgroundDayImg = loadImage(staticPath + "images/background.png")
+  groundDayImg = loadImage(staticPath + "images/floor.png")
+  pipeImg = loadImage(staticPath + "images/pipe.png")
+  pipeendImg = loadImage(staticPath + "images/pipeend.png")
+  bottleImg = loadImage(staticPath + "images/bottle.png")
+  uiFont = loadFont(staticPath + "fonts/uifont.ttf")
 }
-function setup() {
+function setup() { 
   //Create the canvas
-  createCanvas(600, 800);
+  if(windowWidth < 600){
+    createCanvas(windowWidth, windowWidth * (4/3)); 
+	scaleFactor = windowWidth / 600;
+  }
+  else{
+    createCanvas(600, 800);
+	scaleFactor = 1
+  }
   
   // Create 'bird' object
   bird = new Bird();
@@ -85,9 +93,7 @@ function setup() {
       return response.json();
     })
     .then(data => {
-      console.log('User Points:', data.points);
-      fuel = data.points
-	  console.log('Saved in fuel as:', fuel);
+      fuel = data.fuelRemaining
     })
     .catch(error => {
       console.error('Issue getting points from user:', error);
@@ -101,8 +107,8 @@ function setup() {
 function draw() {
   background(0);
   //Draw background and ground
-  image(backgroundImg, backgroundPos, 0, 2400,800);
-  image(groundImg, groundPos, 760, 700,200);
+  image(backgroundImg, backgroundPos * scaleFactor, 0 * scaleFactor, 2400 * scaleFactor,800 * scaleFactor);
+  image(groundImg, groundPos * scaleFactor, 760 * scaleFactor, 700 * scaleFactor,200 * scaleFactor);
   
   // Scroll background and ground (Only when alive! Stop when dead)
   if(currentState != "death"){
@@ -130,14 +136,14 @@ function draw() {
 	// Draw title text
     fill(255)
     textFont(uiFont)
-    textSize(100)
-	text("bottleBounce!", textX, textY)
+    textSize(100 * scaleFactor)
+	text("bottleBounce!", textX * scaleFactor, textY * scaleFactor)
 	
 	// Draw "tap to start" text
-    textSize(50)
+    textSize(50 * scaleFactor)
     fill(140)
-    text("Tap or Click", textX + 50, textY + 200)
-    text("to start game", textX + 30, textY + 250)
+    text("Tap or Click", (textX + 50) * scaleFactor, (textY + 200) * scaleFactor)
+    text("to start game", (textX + 30) * scaleFactor, (textY + 250) * scaleFactor)
 	
 	// Bounce title screen text
     if (textDir == "ascending"){
@@ -168,9 +174,9 @@ function draw() {
     }
 	
 	// Render fuel text
-	textSize(50)
+	textSize(50 * scaleFactor)
 	fill(255)
-	text("Fuel: " + fuel, 50, 50)
+	text("Fuel: " + fuel, 50 * scaleFactor, 50 * scaleFactor)
 	
 	// Fadeout routine
     if (fadeout == true){
@@ -206,11 +212,11 @@ function draw() {
     }
 	
 	// Draw ground over pipes
-	image(groundImg, groundPos, 760, 700,200);
+	image(groundImg, groundPos * scaleFactor, 760 * scaleFactor, 700 * scaleFactor,200 * scaleFactor);
     groundPos -= groundSpeed
 
 	// Change state to death if ground hit
-    if (bird.y > 720){
+    if (bird.y > 720 * scaleFactor){
       deathSound.play()
       currentState = "death"
     }
@@ -219,14 +225,14 @@ function draw() {
     fill(255)
     textFont(uiFont)
     textX = 280
-    textSize(100)
+    textSize(100 * scaleFactor)
     if (score > 9){
       textX = 260
     }
     else{
       textX = 280
     }
-    text(score, textX, 150)
+    text(score, textX  * scaleFactor, 150  * scaleFactor)
 
 	// Show and update bird position
     bird.update();
@@ -238,9 +244,9 @@ function draw() {
     }
 	
 	// Render fuel text
-	textSize(50)
+	textSize(50 * scaleFactor)
 	fill(255)
-	text("Fuel: " + fuel, 50, 50)
+	text("Fuel: " + fuel, 50 * scaleFactor, 50 * scaleFactor)
 	
 	// Flash screen when dieing
     if (currentState == "death"){
@@ -254,26 +260,26 @@ function draw() {
       pipes[i].show();
     }
 	// Draw ground over pipes
-    image(groundImg, groundPos, 760, 700,200);
+    image(groundImg, groundPos * scaleFactor, 760 * scaleFactor, 700 * scaleFactor,200 * scaleFactor);
 	
 	// Draw score
     fill(255)
     textFont(uiFont)
-    textSize(100)
+    textSize(100 * scaleFactor)
     if (score > 9){
       textX = 260
     }
     else{
       textX = 280
     }
-    text(score, textX, 150)
+    text(score, textX * scaleFactor, 150 * scaleFactor)
 	
 	// Continue updating bird (let it fall)
     bird.update()
     bird.show()
 	
 	// Wait for bird to hit ground before showing score
-    if (bird.y >= 721 && transition == false){
+    if (bird.y >= height - 79 * scaleFactor && transition == false){
       transition = true // Trigger text scrolling
       textY = 900
       swooshSound.play()
@@ -283,22 +289,22 @@ function draw() {
 	  // Draw Game Over text
       textX = 120
       fill(244,226,198)
-      text("GAME OVER", textX, textY)
+      text("GAME OVER", textX * scaleFactor, textY * scaleFactor)
 	  
 	  // Scroll text upward
       if (textY >= 250){
         textY -= 14
       }
 	  // Draw UI for Score + Rank
-      rect(textX - 50, textY + 75, 450, 250, 20)
-      textSize(50)
+      rect((textX - 50) * scaleFactor, (textY + 75) * scaleFactor, 450 * scaleFactor, 250 * scaleFactor, 20 * scaleFactor)
+      textSize(50 * scaleFactor)
       fill(120)
-      text("Rank  Hi Score  Score", textX - 17.5, textY + 150)
-      textSize(30)
-      text("Tap or Click to return", textX + 67.5, textY + 300)
-      textSize(100)
+      text("Rank  Hi Score  Score", (textX - 17.5) * scaleFactor, (textY + 150) * scaleFactor)
+      textSize(30* scaleFactor)
+      text("Tap or Click to return", (textX + 67.5) * scaleFactor, (textY + 300) * scaleFactor)
+      textSize(100 * scaleFactor)
       fill(150)
-      text(score, textX + 287.5, textY + 250)
+      text(score, (textX + 287.5) * scaleFactor, (textY + 250) * scaleFactor)
 	  
 	  // Update highscore if score achieved is higher than current highscore.
       if (score > highScore){
@@ -306,39 +312,39 @@ function draw() {
       }
 	  
 	  // Render the high score
-      text(highScore, textX + 150, textY + 250)
+      text(highScore, (textX + 150) * scaleFactor, (textY + 250) * scaleFactor)
 	  
 	  // Display appropriate rank
       if (score < 10){
         fill(255,0,0)
-        text("F-", textX - 17.5, textY + 250)
+        text("F-", (textX - 17.5) * scaleFactor, (textY + 250) * scaleFactor)
       }
       else if (score >= 10 && score < 20){
         fill(255,69,0)
-        text("D", textX, textY + 250)
+        text("D", textX * scaleFactor, (textY + 250) * scaleFactor)
       }
       else if (score >= 20 && score < 30){
         fill(255, 170, 29)
-        text("C", textX, textY + 250)
+        text("C", textX * scaleFactor, (textY + 250) * scaleFactor)
       }
       else if (score >= 30 && score < 40){
         fill(173,255,47)
-        text("B", textX, textY + 250)
+        text("B", textX * scaleFactor, (textY + 250) * scaleFactor)
       }
       else if (score >= 40 && score < 50){
         fill(34,139,34)
-        text("A", textX, textY + 250)
+        text("A", textX * scaleFactor, (textY + 250) * scaleFactor)
       }
       else if (score >= 50){
         fill(34,139,34)
-        text("A+", textX - 17.5, textY + 250)
+        text("A+", textX * scaleFactor, (textY + 250) * scaleFactor)
       }
     }
 	
 	// Render fuel text
-	textSize(50)
+	textSize(50 * scaleFactor)
 	fill(255)
-	text("Fuel: " + fuel, 50, 50)
+	text("Fuel: " + fuel, 50 * scaleFactor, 50 * scaleFactor)
 	
 	// Fade out routine
     if (fadeout == true){
@@ -397,4 +403,3 @@ function mousePressed(){
       fadeout = true
     }
 }
-
