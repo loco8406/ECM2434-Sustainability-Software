@@ -22,25 +22,16 @@
 
 .form-container-home{
     width: 275px;
-    border:2px solid var(--exeter-green);
     padding: 10px;
     margin-left: 20px;
 }
+
 .header{
     width: 100px;
     align-items: center;
     display: flex;
     flex-direction: column;
     text-align: center;
-}
-
-
-
-.context-box{
-    width: 70%;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #f4f4f4;
 }
 
 #login_size{
@@ -76,6 +67,11 @@ body {
     min-height: 100vh;
     padding-top: 0; /* Removed extra padding */
     margin-top: 0; /* Ensures no extra space */
+}
+
+.navbar-logo {
+    max-height: 150px;
+    max-width: 100px;
 }
 
 .navbar {
