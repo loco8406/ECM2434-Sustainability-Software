@@ -255,8 +255,6 @@ def is_gamekeeper(user):
 def gamekeeper_dashboard(request):
     if request.method == 'POST':  # If the form is submitted
         challengeForm = ChallengeForm(request.POST)
-        waterStationForm = WaterStationForm(request.POST)
-
         if challengeForm.is_valid():  # Handles challenege form if submited
             challenge = challengeForm.save()  # Save and store the challenge instance
             challenge_name = challengeForm.cleaned_data.get(
@@ -266,22 +264,11 @@ def gamekeeper_dashboard(request):
             # Redirect to the same page or another view
             return redirect('gamekeeper')
 
-        elif waterStationForm.is_valid():  # Handles waterstation form if submited
-            # Save and store the waterstation instance
-            waterStation = waterStationForm.save()  # Save and store the challenge instance
-            waterStation_id = waterStation.id  # Get Water Station ID.
-            print(waterStation_id)
-            messages.success(
-                request, f'Water Station "{waterStation_id}" created successfully!')
-            # Pass data to generate_qr view to encode.
-            return HttpResponseRedirect(reverse('generate_qr') + f'?data={waterStation_id}')
-
     else:
         # Empty forms for GET request
         challengeForm = ChallengeForm()
-        waterStationForm = WaterStationForm()
 
-    return render(request, 'envapp/gamekeeper_dashboard.html', {'challengeForm': challengeForm, 'waterStationForm': waterStationForm})
+    return render(request, 'envapp/gamekeeper_dashboard.html', {'challengeForm': challengeForm})
 
 
 # Edit Challenge
@@ -315,14 +302,14 @@ def delete_challenge(request, challenge_id):
 # Basic QR code generation
 @login_required
 def generate_qr(request):
-    data = request.GET.get('data')
+    station_id = request.GET.get('station_id')
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4
+        box_size=12,
+        border=2,
     )
-    qr.add_data(data)
+    qr.add_data(station_id)
     qr.make(fit=True)
     img = qr.make_image()
     buffer = BytesIO()

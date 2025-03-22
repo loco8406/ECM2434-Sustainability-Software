@@ -179,6 +179,14 @@ tr:hover {
     background-color: var(--light-gray);
     transition: 0.3s;
 }
+.container {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 20px;
+        align-items: stretch;
+    }
 
 .form-container {
     background: white;
@@ -215,6 +223,7 @@ tr:hover {
 .form-container .btn-primary {
     width: 100%;
     margin-top: 15px;
+
 }
 
 .redirect-link {
@@ -251,6 +260,7 @@ tr:hover {
     border: none;
     width: 100%;
     transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    margin-top: 10px;
 }
 
 .btn-primary:hover {
@@ -307,7 +317,10 @@ footer {
 #map {
     height: 500px;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 50px;
+    border-radius: 8px;
+    flex: 2;
+
 }
 
 .form-check-input {
