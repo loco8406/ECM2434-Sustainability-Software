@@ -11,6 +11,56 @@
     --error-color: #721c24;
 }
 
+.page-container{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    position: relative;
+    width: 100%;
+}
+
+.form-container-home{
+    width: 275px;
+    border:2px solid var(--exeter-green);
+    padding: 10px;
+    margin-left: 20px;
+}
+.header{
+    width: 100px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+
+
+.context-box{
+    width: 70%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+}
+
+#login_size{
+    font-size: 8px;
+    padding: 5px 5px;
+    width: 80%;
+}
+
+#login_pos{
+    width: 100px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 10px;
+    margin: 0;
+}
+
 * {
     margin: 0;
     padding: 0;
