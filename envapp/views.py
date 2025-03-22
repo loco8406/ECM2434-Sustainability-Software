@@ -262,7 +262,7 @@ def gamekeeper_dashboard(request):
             messages.success(
                 request, f'Challenge "{challenge_name}" created successfully!')
             # Redirect to the same page or another view
-            return redirect('gamekeeper')
+            return redirect('gamekeeper_dashboard')
 
     else:
         # Empty forms for GET request
