@@ -179,6 +179,12 @@ tr:hover {
     background-color: var(--light-gray);
     transition: 0.3s;
 }
+.container {
+         align-items: flex-start;
+         justify-content: space-between;
+         gap: 20px;
+         padding: 20px;
+     }
 
 .form-container {
     background: white;
@@ -312,7 +318,6 @@ footer {
     margin-top: 50px;
     border-radius: 8px;
     flex: 2;
-
 }
 
 .form-check-input {

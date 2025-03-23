@@ -73,7 +73,7 @@
 
         var marker = L.marker([
             {{ station.latitude }},
-        { { station.longitude } }
+        {{ station.longitude }}
             ], {
             icon: {% if not station.is_working %}notWorkingStation{% else %}workingStation{% endif %}
         }).bindPopup(popupContent)
