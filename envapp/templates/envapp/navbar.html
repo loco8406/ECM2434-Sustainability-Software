@@ -16,7 +16,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     {% if request.user.role == 'gamekeeper' %}
-                    <a class="nav-link" href="{% url 'gamekeeper_map' %}">Map</a>
+                    <a class="nav-link" href="{% url 'gamekeeper_map' %}">Edit Map</a>
                     {% else %}
                     <a class="nav-link" href="{% url 'map' %}">Map</a>
                     {% endif %}

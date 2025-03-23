@@ -28,10 +28,15 @@ urlpatterns = [
     # GAMEKEEPER URLS
     path('gamekeeper_dashboard/', views.gamekeeper_dashboard,
          name='gamekeeper_dashboard'),
+    path('createChallenge/',
+         views.createChallenge, name='createChallenge'),
+    path('challengeList/',
+         views.challengeList, name='challengeList'),
     path('edit_challenge/<int:challenge_id>/',
          views.edit_challenge, name='edit_challenge'),
     path("delete_challenge/<int:challenge_id>/",
          views.delete_challenge, name="delete_challenge"),
+    path('challenges/<int:challenge_id>/', views.challengeDetail, name='challengeDetail'),
 
     # QR CODE URLS
     path('generate_qr/', views.generate_qr, name='generate_qr'),

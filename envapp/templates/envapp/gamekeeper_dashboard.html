@@ -6,233 +6,74 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gamekeeper Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <style>
-        
-        .dashboard-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gamekeeper Portal - Plastic Waste Tracker</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-        .form-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 15px;
-            border-radius: 10px;
-            background: #f8f9fa;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
-
-        /* Table overflow fix for mobile */
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        /* Full-width buttons on smaller screens */
-        .btn-primary {
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        /* Form Box */
-        .form-container {
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-            border-radius: 10px;
-            background: #ffffff;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Table Container */
-        .table-responsive {
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Buttons */
-        .btn-primary, .btn-warning, .btn-danger {
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        /* Ensure table doesn't break on small screens */
-        .table-responsive {
-            overflow-x: auto;
-        }
-    </style>
+      }
+      return cookieValue;
+    }
+  </script>
 </head>
 
 <body>
+  <div class="container mt-5">
+    <h1>Welcome, {{ user.username }}!</h1>
+    <h2>⚠️ This portal is for authorised gamekeeper users only. ⚠️</h2>
 
-    <div class="container">
-        <h2 class="text-center mt-3">Gamekeeper Dashboard</h2>
+    <h2 class="mt-4">Administration Options</h2>
+    <ul class="list-group">
+      <li class="list-group-item">
+        Create a new challenge for users 🏆 -
+        <button onclick="goToCreateChallenge()" class="btn btn-success btn-sm">Create Challenge</button>
+      </li>
+      <li class="list-group-item">
+        View, Edit, and add Water Stations to existing challenges 🔧 - 
+        <button onclick="goToChallengeList()" class="btn btn-success btn-sm">Edit Challenges</button>
+      </li>
+      <li class="list-group-item">
+        Add Water Stations to the map 💧 -
+        <button onclick="goToMap()" class="btn btn-success btn-sm">Go to Map</button>
+      </li>
+    </ul>
+  </div>
 
-        {% if messages %}
-        <div class="alert alert-info">
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
-        </div>
-        {% endif %}
+  <footer class="text-center mt-5 py-3 bg-light">
+    <p>© 2025 Sip & Save | Making an Impact, One Bottle at a Time</p>
+  </footer>
 
-        <div class="dashboard-container">
+  <script>
+	// Function to redirect to create challenge page
+    function goToCreateChallenge() {
+      document.location.href = "{% url 'createChallenge' %}"
+    }
+	
+	// Function to redirect to challenge list
+	function goToChallengeList() {
+      document.location.href = "{% url 'challengeList' %}"
+    }
+	
+	// Function to redirect to map
+	function goToMap() {
+      document.location.href = "{% url 'gamekeeper_map' %}"
+    }
 
-            <!-- Challenge Form -->
-            <div class="form-container">
-                <h4>Create a New Challenge</h4>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ challengeForm.as_p }}
-                    <button type="submit" class="btn btn-primary">Create Challenge</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <h4>Manage Existing Challenges</h4>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Location</th>
-                            <th>Date</th>
-                            <th>Points</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for challenge in challenges %}
-                        <tr>
-                            <td>{{ challenge.title }}</td>
-                            <td>{{ challenge.description }}</td>
-                            <td>{{ challenge.location }}</td>
-                            <td>{{ challenge.challenge_date }}</td>
-                            <td>{{ challenge.points_reward }}</td>
-                            <td>
-                                <a href="{% url 'edit_challenge' challenge.id %}" class="btn btn-sm btn-warning">Edit</a>
-                                <button data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
-                                    data-delete-url="{% url 'delete_challenge' challenge.id %}"
-                                    onclick="setDeleteUrl(this)" class="btn btn-sm btn-danger">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        <div class="mt-4 table-responsive">
-            <h4>Manage Existing Challenges</h4>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Location</th>
-                        <th>Date</th>
-                        <th>Points</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for challenge in challenges %}
-                    <tr>
-                        <td>{{ challenge.title }}</td>
-                        <td>{{ challenge.description }}</td>
-                        <td>{{ challenge.location }}</td>
-                        <td>{{ challenge.challenge_date }}</td>
-                        <td>{{ challenge.points_reward }}</td>
-                        <td>
-                            <a href="{% url 'edit_challenge' challenge.id %}" class="btn btn-sm btn-warning">Edit</a>
-                            <button data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
-                                data-delete-url="{% url 'delete_challenge' challenge.id %}"
-                                onclick="setDeleteUrl(this)" class="btn btn-sm btn-danger">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Bootstrap Modal -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteLabel">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this challenge? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let deleteUrl = "";
-
-        function setDeleteUrl(button) {
-            deleteUrl = button.getAttribute("data-delete-url");
-        }
-
-        document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
-            fetch(deleteUrl, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken"),
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        var modal = bootstrap.Modal.getInstance(document.getElementById("confirmDeleteModal"));
-                        modal.hide();
-                        location.reload();
-                    } else {
-                        alert("Error deleting challenge.");
-                    }
-                })
-                .catch(error => console.error("Error:", error));
-        });
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== "") {
-                let cookies = document.cookie.split(";");
-                for (let i = 0; i < cookies.length; i++) {
-                    let cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </script>
 </body>
 
 </html>

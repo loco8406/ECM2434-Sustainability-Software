@@ -249,10 +249,15 @@ def is_gamekeeper(user):
     raise PermissionDenied  # Show 403 Forbidden error if not a gamekeeper
 
 # Gamekeeper Dashboard
-# Handles both forms on the Gamekeeper dashboard
 @login_required
 @user_passes_test(is_gamekeeper, login_url='/login/')
 def gamekeeper_dashboard(request):
+    return render(request, 'envapp/gamekeeper_dashboard.html')
+
+#Create Challenge
+@login_required
+@user_passes_test(is_gamekeeper, login_url='/login/')
+def createChallenge(request):
     if request.method == 'POST':  # If the form is submitted
         challengeForm = ChallengeForm(request.POST)
         if challengeForm.is_valid():  # Handles challenege form if submited
@@ -262,13 +267,13 @@ def gamekeeper_dashboard(request):
             messages.success(
                 request, f'Challenge "{challenge_name}" created successfully!')
             # Redirect to the same page or another view
-            return redirect('gamekeeper_dashboard')
+            return redirect('createChallenge')
 
     else:
         # Empty forms for GET request
         challengeForm = ChallengeForm()
 
-    return render(request, 'envapp/gamekeeper_dashboard.html', {'challengeForm': challengeForm})
+    return render(request, 'envapp/createChallenge.html', {'challengeForm': challengeForm})
 
 
 # Edit Challenge
@@ -422,6 +427,7 @@ def updateFuelEvent(request, newPointValue):
         
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
 
+### WATER STATION REPORTING
 def report_water_station(request, station_id):
     station = get_object_or_404(WaterStation, id=station_id)
     
@@ -441,3 +447,12 @@ def reset_report(request, station_id):
     station.save()
     messages.success(request, f"Reports for '{station.name}' have been reset.")
     return redirect('gamekeeper_map')
+    
+@login_required  
+def challengeList(request):
+    challenges = Challenge.objects.all().order_by('-created_at')  # Fetch and sort by creation date
+    return render(request, 'envapp/challengeList.html', {'challenges': challenges})
+    
+def challengeDetail(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    return render(request, 'envapp/challengeDetail.html', {'challenge': challenge})

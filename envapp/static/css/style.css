@@ -179,14 +179,6 @@ tr:hover {
     background-color: var(--light-gray);
     transition: 0.3s;
 }
-.container {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 20px;
-        padding: 20px;
-        align-items: stretch;
-    }
 
 .form-container {
     background: white;
