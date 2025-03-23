@@ -156,7 +156,7 @@
 
         var stationIcon = {% if not station.is_working %} notWorkingStation {% else %} workingStation {% endif %};
 
-        var marker = L.marker([{{ station.latitude }}, { { station.longitude } }], { icon: stationIcon })
+        var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}], { icon: stationIcon })
         .bindPopup(popupContent)
             .on("click", function () {
                 map.flyTo(this.getLatLng(), 18);
