@@ -1,5 +1,5 @@
-{% include 'envapp/navbar.html' %}
 {% load static %}
+{% include 'envapp/navbar.html' %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,12 +23,12 @@
         const workingStation = L.icon({
             iconUrl: "{% static 'images/blue-marker.png' %}",
             iconSize: [38, 38],
-            });
+        });
         const notWorkingStation = L.icon({
             iconUrl: "{% static 'images/red-marker.png' %}",
             iconSize: [38, 38],
-            });
-        map.locate({setView: true, maxZoom: 16});
+        });
+        map.locate({ setView: true, maxZoom: 16 });
 
         const profilePic = "{% if request.user.profile_picture and request.user.profile_picture.url != '/media/profile_pics/default_profile_pic.png' %}{{ request.user.profile_picture.url }}{% else %}{{ MEDIA_URL }}profile_pics/default_profile_pic.png{% endif %}";
         var userProfile = L.icon({
@@ -54,11 +54,11 @@
         }
 
         {% for station in water_stations %}
-            var stationImage = `{% if station.photo %}<img src="{{ station.photo.url }}" width="100" style="border-radius: 10px;">{% else %}<span class="text-muted">No Image Available</span>{% endif %}`;
+        var stationImage = `{% if station.photo %}<img src="{{ station.photo.url }}" width="100" style="border-radius: 10px;">{% else %}<span class="text-muted">No Image Available</span>{% endif %}`;
 
-            var stationStatus = `{% if not station.is_working %}<span class="badge bg-danger">🚨 Not Working</span>{% else %}<span class="badge bg-success">✅ Working</span>{% endif %}`;
+        var stationStatus = `{% if not station.is_working %}<span class="badge bg-danger">🚨 Not Working</span>{% else %}<span class="badge bg-success">✅ Working</span>{% endif %}`;
 
-            var popupContent = `
+        var popupContent = `
                 <h3>{{ station.name }}</h3>
                 <p><strong>Location:</strong> {{ station.location_description }}</p>
                 <p><strong>Points:</strong> {{ station.points_reward }}</p>
@@ -71,17 +71,17 @@
                 </form>
             `;
 
-            var marker = L.marker([
-                {{ station.latitude }}, 
-                {{ station.longitude }}
+        var marker = L.marker([
+            {{ station.latitude }},
+        { { station.longitude } }
             ], {
-                icon: {% if not station.is_working %}notWorkingStation{% else %}workingStation{% endif %}
-            }).bindPopup(popupContent)
-                .on("click", function () {
-                    map.flyTo(this.getLatLng(), 18);
-                });
+            icon: {% if not station.is_working %}notWorkingStation{% else %}workingStation{% endif %}
+        }).bindPopup(popupContent)
+            .on("click", function () {
+                map.flyTo(this.getLatLng(), 18);
+            });
 
-            waterStationsLayer.addLayer(marker);
+        waterStationsLayer.addLayer(marker);
         {% endfor %}
 
         waterStationsLayer.addTo(map);
