@@ -4,3 +4,5 @@ venv/
 /envapp/__pycache__
 /Sip&Save/__pycache__
 /Sip&Save/__pycache__/urls.cpython-310.pyc
+__pycache__/
+*.py[cod]

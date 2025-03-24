@@ -10,8 +10,10 @@ class ChallengeForm(forms.ModelForm):
         model = Challenge
         fields = ['title', 'description', 'location', 'challenge_date',
                   "points_reward"]  # Fields shown in the form
+        widgets = {
+            'challenge_date': forms.DateTimeInput(attrs={'type': 'datetime-local'})}
 
-# Form for Water station created by the Gamekeeper
+        # Form for Water station created by the Gamekeeper
 
 
 class WaterStationForm(forms.ModelForm):

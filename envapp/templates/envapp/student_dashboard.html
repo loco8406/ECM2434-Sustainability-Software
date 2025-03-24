@@ -1,5 +1,5 @@
-{% include 'envapp/navbar.html' %}
 {% load static %}
+{% include 'envapp/navbar.html' %}
 
 {% block content %}
 <!DOCTYPE html>
@@ -39,10 +39,10 @@
     <h3 class="mt-4">
       🏆 Total Points: <strong>{{ user.points }} Points</strong>
     </h3>
-	<h3 class="mt-4">
+    <h3 class="mt-4">
       💧 Water Collected: <strong>{{ user.fuelRemaining }} Droplets</strong>
     </h3>
-	<p><i>Collect water from Filling Stations and use them to play Bottle Bounce!</i></p>
+    <p><i>Collect water from Filling Stations and use them to play Bottle Bounce!</i></p>
 
     <div class="progress-container">
       <div class="progress">
@@ -73,37 +73,37 @@
 
     <h2 class="mt-4">✅ Completed Actions</h2>
     <ul class="list-group">
-        {% if refills.exists %}
-            {% for refill in refills %}
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="text-success">💧</span>
-                            <span class="ms-2">Refilled at Station #{{ refill.waterStationID }}</span>
-                        </div>
-                        <small class="text-muted">{{ refill.get_formatted_date }}</small>
-                    </div>
-                </li>
-            {% endfor %}
-        {% else %}
-                <li class="list-group-item text-center text-muted">
-                    <p class="mb-0">No refills logged yet. Visit a water station to get started! 💧</p>
-                </li>
-        {% endif %}
+      {% if refills.exists %}
+      {% for refill in refills %}
+      <li class="list-group-item">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="text-success">💧</span>
+            <span class="ms-2">Refilled at Station #{{ refill.waterStationID }}</span>
+          </div>
+          <small class="text-muted">{{ refill.get_formatted_date }}</small>
+        </div>
+      </li>
+      {% endfor %}
+      {% else %}
+      <li class="list-group-item text-center text-muted">
+        <p class="mb-0">No refills logged yet. Visit a water station to get started! 💧</p>
+      </li>
+      {% endif %}
     </ul>
   </div>
 
   <footer class="text-center mt-5 py-3 bg-light">
-    <p>© 2025 Plastic Waste Tracker | Making an Impact, One Bottle at a Time</p>
+    <p>© 2025 Sip n Save | Making an Impact, One Bottle at a Time</p>
   </footer>
 
   <script>
     function goToScanPage() {
       document.location.href = "{% url 'scanQR' %}"
     }
-	
-	// Function to redirect to bottle bounce game
-	function goToBottleBounce() {
+
+    // Function to redirect to bottle bounce game
+    function goToBottleBounce() {
       document.location.href = "{% url 'sippyBottle' %}"
     }
 
