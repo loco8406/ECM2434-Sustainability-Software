@@ -34,12 +34,6 @@
     text-align: center;
 }
 
-#login_size{
-    font-size: 8px;
-    padding: 5px 5px;
-    width: 80%;
-}
-
 #login_pos{
     width: 100px;
     position: absolute;
