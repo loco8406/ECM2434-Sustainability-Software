@@ -29,12 +29,25 @@ class WaterStationForm(forms.ModelForm):
 
 
 class CustomUserCreationForm(UserCreationForm):
+
+    first_name = forms.CharField(
+        max_length=30,
+        required=True,
+        label="First Name",
+        help_text="Required. Enter your first name."
+    )
+    
+    last_name = forms.CharField(
+        max_length=30,
+        required=True,
+        label="Last Name",
+        help_text="Required. Enter your last name."
+    )
+
+
     BOTTLE_SIZE_CHOICES = [
         ("500ml", "500ml"),
-        ("750ml", "750ml"),
-        ("1000ml", "1L"),
-        ("1500ml", "1.5L"),
-        ("2000ml", "2L"),
+        ("1000ml", "1000ml"),
     ]
 
     bottle_size = forms.ChoiceField(
@@ -50,20 +63,6 @@ class CustomUserCreationForm(UserCreationForm):
         label="Referral Code",
         help_text="Enter a referral code if you have one."
     )
-    BOTTLE_SIZE_CHOICES = [
-        ("500ml", "500ml"),
-        ("750ml", "750ml"),
-        ("1000ml", "1L"),
-        ("1500ml", "1.5L"),
-        ("2000ml", "2L"),
-    ]
-
-    bottle_size = forms.ChoiceField(
-        choices=BOTTLE_SIZE_CHOICES,
-        required=True,
-        label="Estimated Bottle Size",
-        help_text="Select the size of your reusable bottle."
-    )
 
     # Add explicit email field
     email = forms.EmailField(
@@ -77,6 +76,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = UserTable
         fields = ["username", "password1", "password2",
                   "first_name", "last_name", "email", "bottle_size"]
+
 
 class StationToChallengeForm(forms.Form):
     waterStationIDs = forms.ModelMultipleChoiceField(

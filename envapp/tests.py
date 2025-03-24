@@ -87,7 +87,9 @@ class RegistrationTests(TestCase):
             'password1': 'testpass123',
             'password2': 'testpass123',
             'role': 'user',
-            'bottle_size': '500ml'
+            'bottle_size': '500ml',
+            'first_name': 'Test',
+            'last_name': 'User',
         }
 
     def test_registration_success(self):
@@ -102,6 +104,8 @@ class RegistrationTests(TestCase):
     def test_registration_missing_fields(self):
         invalid_data = self.valid_user_data.copy()
         del invalid_data['email']
+        del invalid_data['first_name']
+        del invalid_data['last_name']
         response = self.client.post(self.register_url, invalid_data)
         self.assertEqual(response.status_code, 200)  # Stay on same page with error
         self.assertFalse(self.user.objects.filter(username='testuser').exists())
@@ -119,6 +123,37 @@ class RegistrationTests(TestCase):
         response = self.client.post(self.register_url, invalid_data)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(self.user.objects.filter(username='testuser').exists())
+    
+    def test_registration_valid_referral(self):
+        """Test registration with valid referral code"""
+        # Create a user with a known referral code
+        referrer = self.user.objects.create_user(
+            username='referrer',
+            email='referrer@example.com',
+            password='testpass123'
+        )
+        UserTable.objects.filter(username='referrer').update(referral_code='ABC123')
+
+        # Add referral code to registration data
+        valid_data = self.valid_user_data.copy()
+        valid_data['input_referral_code'] = 'ABC123'
+
+        response = self.client.post(self.register_url, valid_data)
+        self.assertEqual(response.status_code, 302) # Redirect after successful registration   
+        self.assertTrue(self.user.objects.filter(username='testuser').exists())
+
+    def test_registration_invalid_referral(self):
+        """Test registration with invalid referral code"""
+        invalid_data = self.valid_user_data.copy()
+        invalid_data['input_referral_code'] = 'INVALID'
+
+        response = self.client.post(self.register_url, invalid_data)
+        self.assertEqual(response.status_code, 302) # Redirect after successful registration
+
+        user_table = UserTable.objects.get(username='testuser')
+        self.assertIsNone(getattr(user_table, 'referrer', None))
+        self.assertEqual(user_table.getPoints(), 0)
+        
 
 class LoginTests(TestCase):
     def setUp(self):
@@ -168,9 +203,6 @@ class LoginTests(TestCase):
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
 
-    
 
-
-    
 
 
