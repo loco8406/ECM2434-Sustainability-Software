@@ -9,8 +9,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
-from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm
-from .models import Challenge, UserTable, WaterStation, StationUsers
+from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm, StationToChallengeForm
+from .models import Challenge, UserTable, WaterStation, StationUsers, StationToChallenge
 import qrcode
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
@@ -20,6 +20,7 @@ from PIL import Image
 import traceback
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
+from django.utils.timezone import now
 
 
 # LOGIN SYSTEM VIEWS
@@ -249,10 +250,15 @@ def is_gamekeeper(user):
     raise PermissionDenied  # Show 403 Forbidden error if not a gamekeeper
 
 # Gamekeeper Dashboard
-# Handles both forms on the Gamekeeper dashboard
 @login_required
 @user_passes_test(is_gamekeeper, login_url='/login/')
 def gamekeeper_dashboard(request):
+    return render(request, 'envapp/gamekeeper_dashboard.html')
+
+#Create Challenge
+@login_required
+@user_passes_test(is_gamekeeper, login_url='/login/')
+def createChallenge(request):
     if request.method == 'POST':  # If the form is submitted
         challengeForm = ChallengeForm(request.POST)
         if challengeForm.is_valid():  # Handles challenege form if submited
@@ -262,13 +268,13 @@ def gamekeeper_dashboard(request):
             messages.success(
                 request, f'Challenge "{challenge_name}" created successfully!')
             # Redirect to the same page or another view
-            return redirect('gamekeeper_dashboard')
+            return redirect('createChallenge')
 
     else:
         # Empty forms for GET request
         challengeForm = ChallengeForm()
 
-    return render(request, 'envapp/gamekeeper_dashboard.html', {'challengeForm': challengeForm})
+    return render(request, 'envapp/createChallenge.html', {'challengeForm': challengeForm})
 
 
 # Edit Challenge
@@ -297,6 +303,68 @@ def delete_challenge(request, challenge_id):
         return JsonResponse({"message": "Challenge deleted successfully!"}, status=200)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+    
+# Render list of challenges
+def challengeList(request):
+    challenges = Challenge.objects.all().order_by('-created_at')  # Grab and sort by creation date
+    return render(request, 'envapp/challengeList.html', {'challenges': challenges})
+
+# Page for Challenge details/assignment
+@login_required
+def assignStationToChallenge(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    water_stations = WaterStation.objects.filter(is_working=True)
+    assigned_stations = WaterStation.objects.filter(
+        id__in=StationToChallenge.objects.filter(challengeID=challenge.id).values_list('waterStationID', flat=True)
+    )
+    
+    # Check user role
+    user = request.user
+    is_gamekeeper = user.role == 'gamekeeper'
+    is_user = user.role == 'user'
+
+    # Grab visited water stations after the challenge assignment date
+    visited_stations = StationUsers.objects.filter(
+        waterStationID__in=assigned_stations.values_list('id', flat=True),
+        fillTime__gte=challenge.created_at
+    ).values_list('waterStationID', flat=True)
+
+    # Check if all assigned water stations have been visited
+    all_visited = set(assigned_stations.values_list('id', flat=True)).issubset(set(visited_stations))
+
+    if request.method == 'POST':
+        # Handle bonus points claim for normal users
+        if 'claim_bonus' in request.POST and all_visited and is_user:
+            user.points += challenge.points_reward
+            user.save()
+            return redirect('challengeDetail', challenge_id=challenge.id)
+
+        # Handle station assignment for gamekeepers
+        if is_gamekeeper:
+            # Clear existing assignments and process the form
+            StationToChallenge.objects.filter(challengeID=challenge.id).delete()
+            form = StationToChallengeForm(request.POST, queryset=water_stations)
+            if form.is_valid():
+                selectedStations = form.cleaned_data['waterStationIDs']
+                for station in selectedStations:
+                    StationToChallenge.objects.create(
+                        waterStationID=station.id,
+                        challengeID=challenge.id
+                    )
+                return redirect('challengeDetail', challenge_id=challenge.id)
+    else:
+        form = StationToChallengeForm(queryset=water_stations)
+
+    context = {
+        'challenge': challenge,
+        'form': form,
+        'assigned_stations': assigned_stations,
+        'visited_stations': visited_stations,  # IDs of visited water stations
+        'all_visited': all_visited,  # Boolean: have all been visited?
+        'is_gamekeeper': is_gamekeeper,
+        'is_user': is_user,
+    }
+    return render(request, 'envapp/challengeDetail.html', context)
 
 
 # Basic QR code generation
@@ -336,7 +404,7 @@ def stationScanEvent(request, station_id):
     usageRecords = StationUsers.objects.all()
 
     # Get a 'cut off' time to determine if the cooldown has expired (this can be adjusted, set to 1 minute for now for ease of testing)
-    cutOff = timezone.now() - timedelta(hours=1)
+    cutOff = timezone.now() - timedelta(minutes=1)
     print('station scanned')
 
     # Look through the usage records.
@@ -363,8 +431,13 @@ def stationScanEvent(request, station_id):
             userID=user.id, waterStationID=station.id, fillTime=timezone.now())
         newFillRecord.save()
 
-    # Redirect to User Portal
-    return render(request, 'envapp/scanSuccess.html', {'pointsGained': station.points_reward})
+        # Redirect to Success Page
+        return render(request, 'envapp/scanSuccess.html', {'pointsGained': station.points_reward})
+        
+    else:
+        # Redirect to fail page and pass through cut off time
+        return render(request, 'envapp/scanFail.html')
+    
 
 
 
@@ -409,6 +482,7 @@ def sippyBottle(request):
 @login_required
 def getFuel(request):
     user = request.user
+    print("Got fuel value:", user.fuelRemaining)
     return JsonResponse({'points': user.fuelRemaining})
 
 @login_required    
@@ -422,6 +496,7 @@ def updateFuelEvent(request, newPointValue):
         
     return render(request, 'envapp/student_dashboard.html') # Redirect to User Portal
 
+### WATER STATION REPORTING
 def report_water_station(request, station_id):
     station = get_object_or_404(WaterStation, id=station_id)
     
@@ -441,3 +516,8 @@ def reset_report(request, station_id):
     station.save()
     messages.success(request, f"Reports for '{station.name}' have been reset.")
     return redirect('gamekeeper_map')
+
+# MISC
+# Custom 404 page
+def custom_404(request, exception):
+    return render(request, 'envapp/404.html', status=404)

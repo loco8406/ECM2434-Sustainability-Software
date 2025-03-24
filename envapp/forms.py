@@ -1,6 +1,7 @@
 from django import forms
+from django.db.models import Q
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserTable, WaterStation, Challenge
+from .models import UserTable, WaterStation, Challenge, StationToChallenge
 
 # Form for challenges created by the Gamekeeper
 
@@ -10,8 +11,10 @@ class ChallengeForm(forms.ModelForm):
         model = Challenge
         fields = ['title', 'description', 'location', 'challenge_date',
                   "points_reward"]  # Fields shown in the form
+        widgets = {
+            'challenge_date': forms.DateTimeInput(attrs={'type': 'datetime-local'})}
 
-# Form for Water station created by the Gamekeeper
+        # Form for Water station created by the Gamekeeper
 
 
 class WaterStationForm(forms.ModelForm):
@@ -66,3 +69,15 @@ class CustomUserCreationForm(UserCreationForm):
         model = UserTable
         fields = ["username", "password1", "password2",
                   "first_name", "last_name", "email", "bottle_size"]
+
+class StationToChallengeForm(forms.Form):
+    waterStationIDs = forms.ModelMultipleChoiceField(
+        queryset=WaterStation.objects.none(),
+        widget=forms.CheckboxSelectMultiple,
+        label="Available Water Stations"
+    )
+    
+    def __init__(self, *args, **kwargs):
+        queryset = kwargs.pop('queryset', WaterStation.objects.none())
+        super().__init__(*args, **kwargs)
+        self.fields['waterStationIDs'].queryset = queryset

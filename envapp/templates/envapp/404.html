@@ -1,0 +1,33 @@
+{% load static %}
+{% include 'envapp/navbar.html' %}
+
+<html>
+
+<head>
+  <script>
+    function goBackHome() {
+      document.location.href = "{% url 'home' %}"
+    }
+
+  </script>
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 | Sip n Save</title>
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container d-flex justify-content-center align-items-center vh-100 text-center">
+    <div>
+      <h1>⚠️ Whoops! ⚠️</h1>
+      <p>It appears an error has occurred. We sincerely apologise for the inconvinence.</p>
+      <button onclick="goBackHome()" class="btn btn-success btn-sm">Return to Homepage</button>
+    </div>
+  </div>
+</body>
+
+
+</html>

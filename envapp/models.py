@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 import uuid
 import random
@@ -141,3 +142,7 @@ class StationUsers(models.Model):
 
     class Meta:
         ordering = ['-fillTime']
+
+class StationToChallenge(models.Model):
+    waterStationID = models.IntegerField()
+    challengeID = models.IntegerField()

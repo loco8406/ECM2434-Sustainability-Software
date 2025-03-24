@@ -6,9 +6,10 @@
 <html lang="en">
 
 <head>
+	<link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gamekeeper Map</title>
+    <title>Edit Map | Sip & Save</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -156,7 +157,7 @@
 
         var stationIcon = {% if not station.is_working %} notWorkingStation {% else %} workingStation {% endif %};
 
-        var marker = L.marker([{{ station.latitude }}, { { station.longitude } }], { icon: stationIcon })
+        var marker = L.marker([{{ station.latitude }}, {{ station.longitude }}], { icon: stationIcon })
         .bindPopup(popupContent)
             .on("click", function () {
                 map.flyTo(this.getLatLng(), 18);
