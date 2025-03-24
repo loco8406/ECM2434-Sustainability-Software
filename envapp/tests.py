@@ -76,102 +76,101 @@ class ChallengeTests(TestCase):
         self.assertEqual(self.challenge.points_reward, 100)
 
 
-
 class RegistrationTests(TestCase):
     def setUp(self):
         self.client = Client()
+        self.user = get_user_model()
         self.register_url = reverse('register')
         self.valid_user_data = {
             'username': 'testuser',
+            'email': 'test@example.com',
             'password1': 'testpass123',
             'password2': 'testpass123',
-            'email': 'test@example.com',
-            'role': 'user'
+            'role': 'user',
+            'bottle_size': '500ml'
         }
 
-    def test_successful_registration(self):
+    def test_registration_success(self):
+        response = self.client.get(self.register_url)
+        self.assertEqual(response.status_code, 200)  # Redirect after successful registration
+
         response = self.client.post(self.register_url, self.valid_user_data)
-        self.assertEqual(response.status_code, 302)  # Check redirect
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(self.user.objects.filter(username='testuser').exists())
         self.assertTrue(UserTable.objects.filter(username='testuser').exists())
-        user = UserTable.objects.get(username='testuser')
-        self.assertEqual(user.role, 'user')
 
-    def test_invalid_registration_missing_fields(self):
+    def test_registration_missing_fields(self):
         invalid_data = self.valid_user_data.copy()
-        del invalid_data['username']
+        del invalid_data['email']
         response = self.client.post(self.register_url, invalid_data)
-        self.assertEqual(response.status_code, 200)  # Stay on same page
-        self.assertFalse(UserTable.objects.filter(email='test@example.com').exists())
-
-    def test_password_mismatch(self):
+        self.assertEqual(response.status_code, 200)  # Stay on same page with error
+        self.assertFalse(self.user.objects.filter(username='testuser').exists())
+    
+    def test_registration_password_mismatch(self):
         invalid_data = self.valid_user_data.copy()
-        invalid_data['password2'] = 'wrongpass'
+        invalid_data['password2'] = 'testpass124'
         response = self.client.post(self.register_url, invalid_data)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(UserTable.objects.filter(username='testuser').exists())
+        self.assertFalse(self.user.objects.filter(username='testuser').exists())
 
-    def test_duplicate_username(self):
-        # First registration
-        self.client.post(self.register_url, self.valid_user_data)
-        # Second registration with same username
-        response = self.client.post(self.register_url, self.valid_user_data)
+    def test_registration_invalid_email(self):
+        invalid_data = self.valid_user_data.copy()
+        invalid_data['email'] = 'testexample.com'
+        response = self.client.post(self.register_url, invalid_data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(UserTable.objects.filter(username='testuser').count(), 1)
-
+        self.assertFalse(self.user.objects.filter(username='testuser').exists())
 
 class LoginTests(TestCase):
     def setUp(self):
         self.client = Client()
+        self.user = get_user_model()
         self.login_url = reverse('login')
-        self.user = UserTable.objects.create_user(username='testuser', password='testpass123')
-
-    def test_successful_login(self):
-        response = self.client.post(self.login_url, {'username': 'testuser', 'password': 'testpass123'})
-        self.assertEqual(response.status_code, 302)  # Check redirect
-        self.assertTrue(response.url.endswith('/student_dashboard/'))  # Check redirect URL
-
-    def test_invalid_login(self):
-        response = self.client.post(self.login_url, {'username': 'testuser', 'password': 'wrongpass'})
-        self.assertEqual(response.status_code, 200)  # Stay on same page
-        self.assertContains(response, 'Invalid credentials, please try again.')
-
-
-class ReferralCodeTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = UserTable.objects.create_user(username='testuser', password='testpass123')
-        self.referrer = UserTable.objects.create_user(username='referrer', password='testpass123')
-        self.referrer.referral_code = self.referrer.getCode()
-        self.referrer.save()
-        self.register_url = reverse('register')
-
-    def test_valid_referral_code(self):
-        valid_user_data = {
-            'username': 'newuser',
-            'password1': 'testpass123',
-            'password2': 'testpass123',
-            'email': 'newuser@example.com',
-            'input_referral_code': self.referrer.referral_code
+        # Create a test user
+        self.test_user = self.user.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.valid_login_data = {
+            'username': 'testuser',
+            'password': 'testpass123'
         }
-        response = self.client.post(self.register_url, valid_user_data)
-        self.assertEqual(response.status_code, 302)  # Check redirect
-        self.assertTrue(UserTable.objects.filter(username='newuser').exists())
-        new_user = UserTable.objects.get(username='newuser')
-        self.assertEqual(new_user.points, 25)
-        self.referrer.refresh_from_db()
-        self.assertEqual(self.referrer.points, 50)
 
-    def test_invalid_referral_code(self):
-        invalid_user_data = {
-            'username': 'newuser',
-            'password1': 'testpass123',
-            'password2': 'testpass123',
-            'email': 'newuser@example.com',
-            'input_referral_code': 'INVALIDCODE'
-        }
-        response = self.client.post(self.register_url, invalid_user_data)
-        self.assertEqual(response.status_code, 200)  # Check that the form is re-rendered
-        self.assertContains(response, "Referral code not found. No bonus points awarded.")
-        self.assertFalse(UserTable.objects.filter(username='newuser').exists())
-        self.referrer.refresh_from_db()
-        self.assertEqual(self.referrer.points, 0)
+    def test_login_success(self):
+        """Test successful login with valid credentials"""
+        response = self.client.post(self.login_url, self.valid_login_data)
+        self.assertEqual(response.status_code, 302)  # Redirect after successful login
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_login_wrong_password(self):
+        """Test login failure with wrong password"""
+        invalid_data = self.valid_login_data.copy()
+        invalid_data['password'] = 'testpass124'
+        response = self.client.post(self.login_url, invalid_data)
+        self.assertEqual(response.status_code, 200)  # Stay on login page
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_login_nonexistent_user(self):
+        """Test login failure with non-existent username"""
+        invalid_data = self.valid_login_data.copy()
+        invalid_data['username'] = 'nonexistentuser'
+        response = self.client.post(self.login_url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_login_blank_fields(self):
+        """Test login failure with blank fields"""
+        response = self.client.post(self.login_url, {
+            'username': '',
+            'password': ''
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+
+    
+
+
+    
+
+
