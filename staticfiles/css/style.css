@@ -1,0 +1,423 @@
+:root {
+    --exeter-green: #017849;
+    --exeter-dark-green: #00857B;
+    --light-gray: #f4f4f4;
+    --border-color: #ddd;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-color: #333;
+    --success-bg: #d4edda;
+    --success-color: #155724;
+    --error-bg: #f8d7da;
+    --error-color: #721c24;
+}
+
+.page-container{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    position: relative;
+    width: 100%;
+}
+
+.form-container-home{
+    width: 275px;
+    padding: 10px;
+    margin-left: 20px;
+}
+
+.header{
+    width: 100px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#login_pos{
+    width: 100px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 10px;
+    margin: 0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--light-gray);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 0; /* Removed extra padding */
+    margin-top: 0; /* Ensures no extra space */
+}
+
+.navbar-logo {
+    max-height: 150px;
+    max-width: 100px;
+}
+
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--exeter-green);
+    padding: 15px 20px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    border-radius: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    color: white !important;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+
+.navbar-brand:hover {
+    color: var(--light-gray) !important;
+}
+
+.navbar-toggler {
+    border: none;
+    background: transparent;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:hover {
+    outline: none;
+    box-shadow: none;
+}
+
+.navbar-toggler-icon {
+    filter: invert(100%);
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-item {
+    margin: 0 5px;
+}
+
+.nav-link {
+    color: white !important;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.nav-link:hover {
+    background: var(--exeter-dark-green);
+    color: white !important;
+}
+
+.nav-profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+h1, h2 {
+    color: var(--exeter-green);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px var(--shadow-color);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background: var(--exeter-green);
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: var(--light-gray);
+    transition: 0.3s;
+}
+.container {
+         align-items: flex-start;
+         justify-content: space-between;
+         gap: 20px;
+         padding: 20px;
+     }
+
+.form-container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px var(--shadow-color);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.form-container h2 {
+    color: var(--exeter-green);
+    margin-bottom: 20px;
+}
+
+.form-container label {
+    display: block;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-top: 10px;
+    text-align: left;
+}
+
+.form-container input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.form-container .btn-primary {
+    width: 100%;
+    margin-top: 15px;
+
+}
+
+.redirect-link {
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.redirect-link a {
+    color: var(--exeter-green);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.redirect-link a:hover {
+    text-decoration: underline;
+}
+
+.message {
+    font-size: 14px;
+    background: var(--success-bg);
+    color: var(--success-color);
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background-color: var(--exeter-green) !important;
+    color: white !important;
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    width: 100%;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: grey !important;
+    color: white !important;
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.leaderboard-container {
+    width: 90%;
+    max-width: 900px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px var(--shadow-color);
+    text-align: center;
+    margin-top: 30px;
+}
+
+.leaderboard-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--exeter-green);
+    margin-bottom: 20px;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px var(--shadow-color);
+    overflow: hidden;
+}
+
+.no-users {
+    font-size: 18px;
+    color: var(--text-color);
+    background: var(--error-bg);
+    padding: 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    margin-top: auto;
+    background: #ddd;
+    width: 100%;
+}
+
+#map {
+    height: 500px;
+    width: 100%;
+    margin-top: 50px;
+    border-radius: 8px;
+    flex: 2;
+}
+
+.form-check-input {
+    width: 18px !important;
+    height: 18px !important;
+    cursor: pointer !important;
+    accent-color: var(--exeter-green) !important;
+    appearance: auto !important;
+}
+
+
+.form-GDPR-hyperlink {
+    color: var(--exeter-green) !important;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.form-check-label a:hover {
+    text-decoration: underline;
+}
+
+img {
+    max-width: unset !important; /* Removes Bootstrap constraints */
+    height: auto !important; /* Prevents unwanted scaling */
+}
+
+.profile-picture-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-picture-container img.profile-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    display: block !important;
+    background-color: white !important;
+    border: 3px solid var(--exeter-green) !important;
+}
+
+#cropImagePreview {
+    max-width: 100%;
+    max-height: 450px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+
+.btn-exeter {
+    background-color: var(--exeter-green);
+    color: white;
+    font-weight: bold;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-exeter:hover {
+    background-color: var(--exeter-dark-green);
+}
+
+.btn-exeter-danger {
+    background-color: var(--error-bg);
+    color: var(--error-color);
+    font-weight: bold;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-exeter-danger:hover {
+    background-color: red;
+    color: white;
+}
+
+#avatar {
+    display: none;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--exeter-green);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.custom-file-upload:hover {
+    background-color: var(--exeter-dark-green);
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}

@@ -2,7 +2,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import gamekeeper_map, map_view, report_water_station, reset_report
+from django.conf.urls import handler404
+from .views import gamekeeper_map, map_view, report_water_station, reset_report, custom_404
 
 urlpatterns = [
     # HOME PAGE URL
@@ -36,7 +37,8 @@ urlpatterns = [
          views.edit_challenge, name='edit_challenge'),
     path("delete_challenge/<int:challenge_id>/",
          views.delete_challenge, name="delete_challenge"),
-    path('challenges/<int:challenge_id>/', views.challengeDetail, name='challengeDetail'),
+    path('challenges/<int:challenge_id>/', views.assignStationToChallenge, name='challengeDetail'),
+    path('challenge/<int:challenge_id>/assign/', views.assignStationToChallenge, name='assignStationToChallenge'),
 
     # QR CODE URLS
     path('generate_qr/', views.generate_qr, name='generate_qr'),
@@ -58,5 +60,6 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    
+handler404 = "envapp.views.custom_404"

@@ -4,14 +4,16 @@
     <div class="container-fluid">
 
         {% if request.user.role == 'gamekeeper' %}
-        <a class="navbar-brand" href="{% url 'gamekeeper_dashboard' %}">Sip & Save</a>
+        <a class="navbar-brand" href="{% url 'gamekeeper_dashboard' %}">
+			<img src="{% static 'images/logo.png' %}" alt="Sip & Save Logo" width="30" height="50" class="d-inline-block align-text-top">
+			Sip & Save
+		</a>
         {% else %}
-        <a class="navbar-brand" href="{% url 'student_dashboard' %}">Sip & Save</a>
+        <a class="navbar-brand" href="{% url 'student_dashboard' %}">
+			<img src="{% static 'images/favicon.ico' %}" alt="Sip & Save Logo" width="30" height="50" class="d-inline-block align-text-top">
+			Sip & Save
+		</a>
         {% endif %}
-
-        <div>
-            <img src="{% static 'images/logo.png' %}" alt="Navbar Logo" class="navbar-logo">
-        </div>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -25,10 +27,19 @@
                     <a class="nav-link" href="{% url 'map' %}">Map</a>
                     {% endif %}
                 </li>
-
+				
+				<li class="nav-item">
+                    {% if request.user.role == 'gamekeeper' %}
+                    <a class="nav-link" href="{% url 'challengeList' %}">Edit Challenges</a>
+                    {% else %}
+                    <a class="nav-link" href="{% url 'challengeList' %}">Challenges</a>
+                    {% endif %}
+                </li>
+				
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'leaderboard' %}">Leaderboard</a>
                 </li>
+				
 
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'settings' %}">
@@ -40,6 +51,7 @@
                 <li class="nav-item">
                     <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
                 </li>
+				
             </ul>
         </div>
     </div>

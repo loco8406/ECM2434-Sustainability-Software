@@ -10,6 +10,7 @@
     }
 
   </script>
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ pointsGained }} Points Obtained! | Sip n Save</title>
@@ -19,9 +20,12 @@
 </head>
 
 <body>
-  <div class="container mt-5">
-    <h1>🏆 You gained {{ pointsGained }}, {{ user.username }}! 🏆</h1>
-    <button onclick="goBackHome()" class="btn btn-success btn-sm">Return to Dashboard</button>
+   <div class="container d-flex justify-content-center align-items-center vh-100 text-center">
+	<div>
+		<h1>🎉 You gained {{ pointsGained }} points, {{ user.username }}! 🎉</h1>
+		<p>Remember to use your collected water droplets in BottleBounce!</p>
+		<button onclick="goBackHome()" class="btn btn-success btn-sm">Return to Dashboard</button>
+	</div>
   </div>
 </body>
 
