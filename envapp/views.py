@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ChallengeForm, WaterStationForm, CustomUserCreationForm, StationToChallengeForm
-from .models import Challenge, UserTable, WaterStation, StationUsers, StationToChallenge
+from .models import Challenge, UserTable, WaterStation, StationUsers, StationToChallenge, ChallengeClaims
 import qrcode
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
@@ -107,19 +107,39 @@ def delete_account(request):
 # Student Dashboard
 @login_required
 def student_dashboard(request):
-    # Calculate progress percentage based on user points
-    level_goal = 100  # Set a fixed goal of 100 points
-    raw_percentage = (request.user.points / level_goal) * \
+    # Calculate progress percentage based on user water droplets
+    level_goal = 250
+    raw_percentage = (request.user.fuelRemaining / level_goal) * \
         100 if level_goal > 0 else 0
     # Cap at 100% and round to 1 decimal
     progress_percentage = min(100, round(raw_percentage, 1))
-    user_refills = StationUsers.objects.filter(userID=request.user.id)
 
+    # Retrieve user refills
+    user_refills = StationUsers.objects.filter(userID=request.user.id)
+    num_refills = user_refills.count()
+    
+    # Retrieve user's bottle size
+    bottle_size = request.user.get_bottle_size()
+    
+    # Map bottle size to plastic waste equivalent in grams
+    bottle_size_map = {
+        "500ml": 10,
+        "750ml": 15,
+        "1000ml": 20,
+        "1500ml": 30,
+        "2000ml": 40,
+    }
+    bottle_capacity = bottle_size_map.get(bottle_size, 15)  # Default to 750ml bottle (15 grams) if not found
+    
+    # Calculate total plastic waste saved
+    plastic_waste_saved = num_refills * bottle_capacity
+    
     context = {
         'user': request.user,
         'level_goal': level_goal,
         'progress_percentage': progress_percentage,
-        'refills' : user_refills
+        'refills' : user_refills,
+        'plastic_waste_saved': plastic_waste_saved
     }
     return render(request, 'envapp/student_dashboard.html', context)
 
@@ -331,12 +351,24 @@ def assignStationToChallenge(request, challenge_id):
 
     # Check if all assigned water stations have been visited
     all_visited = set(assigned_stations.values_list('id', flat=True)).issubset(set(visited_stations))
+    user_has_claimed = False
+    
+    # Check if user has already claimed points
+    claimRecords = ChallengeClaims.objects.all() # Get all claim records
+        
+    for record in claimRecords:
+        if record.userID == user.id and record.challengeID -- challenge_id:
+            user_has_claimed = True # set already claimed flag if the user has already claimed the points for this challenge.
 
     if request.method == 'POST':
         # Handle bonus points claim for normal users
-        if 'claim_bonus' in request.POST and all_visited and is_user:
+        if 'claim_bonus' in request.POST and all_visited and is_user and not user_has_claimed:
             user.points += challenge.points_reward
+            user.fuelRemaining += station.points_reward # Also add to the 'fuel' field for use in the game
             user.save()
+            # Record that the user has claimed the points to avoid repeat claimants
+            newClaimRecord = ChallengeClaims(userID=user.id, challengeID=challenge_id)
+            newClaimRecord.save()
             return redirect('challengeDetail', challenge_id=challenge.id)
 
         # Handle station assignment for gamekeepers
@@ -363,6 +395,7 @@ def assignStationToChallenge(request, challenge_id):
         'all_visited': all_visited,  # Boolean: have all been visited?
         'is_gamekeeper': is_gamekeeper,
         'is_user': is_user,
+        'user_has_claimed': user_has_claimed,
     }
     return render(request, 'envapp/challengeDetail.html', context)
 
@@ -414,10 +447,8 @@ def stationScanEvent(request, station_id):
             cooldownActive = True  # Set the cooldown flag to true
             print(record.userID, record.waterStationID, record.fillTime, user.id, station.id, cutOff,
                   record.userID == user.id, record.waterStationID == station.id, record.fillTime > cutOff)
-
-        # If the record's fill time is older than the cooldown duration, remove the record. This stops the database from ballooning too much with old obsolete records.
-        if record.fillTime <= cutOff:
-            record.delete()
+                  
+    
 
     # If the cooldown isn't active, add the points.
     if cooldownActive == False:
@@ -516,8 +547,3 @@ def reset_report(request, station_id):
     station.save()
     messages.success(request, f"Reports for '{station.name}' have been reset.")
     return redirect('gamekeeper_map')
-
-# MISC
-# Custom 404 page
-def custom_404(request, exception):
-    return render(request, 'envapp/404.html', status=404)

@@ -2,8 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from django.conf.urls import handler404
-from .views import gamekeeper_map, map_view, report_water_station, reset_report, custom_404
+from .views import gamekeeper_map, map_view, report_water_station, reset_report
 
 urlpatterns = [
     # HOME PAGE URL

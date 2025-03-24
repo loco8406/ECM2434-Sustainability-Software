@@ -121,7 +121,7 @@ function draw() {
   }
   
   // Reset scroll positions when end of image reached
-  if (backgroundPos <= -1200){
+  if (backgroundPos <= -910){
     backgroundPos = 0
   }
   if (groundPos <= -106){
@@ -141,7 +141,7 @@ function draw() {
 	
 	// Draw "tap to start" text
     textSize(50 * scaleFactor)
-    fill(140)
+    fill(200)
     text("Tap or Click", (textX + 50) * scaleFactor, (textY + 200) * scaleFactor)
     text("to start game", (textX + 30) * scaleFactor, (textY + 250) * scaleFactor)
 	

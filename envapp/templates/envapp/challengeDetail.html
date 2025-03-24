@@ -63,7 +63,7 @@
     <!-- Assigned and Visited Stations -->
     <div class="card shadow-sm mb-4">
       <div class="card-body">
-        <h2 class="h4 mb-3">Water Stations assigned to this Challenge</h2>
+        <h2 class="h4 mb-3">Water Stations to visit</h2>
         {% if assigned_stations %}
         <ul class="list-group">
           {% for station in assigned_stations %}
@@ -87,12 +87,20 @@
 
     <!-- Claim Bonus Points (Only for Normal Users) -->
     {% if is_user and all_visited %}
-    <div class="text-center">
-      <form method="post">
-        {% csrf_token %}
-        <button type="submit" name="claim_bonus" class="btn btn-success">Claim Bonus Points</button>
-      </form>
-    </div>
+		<!-- If make sure they only claim if they have not claimed already -->
+		{% if user_has_claimed %}
+		<div class="text-center">
+			{% csrf_token %}
+			<button class="btn btn-danger">Points Already Claimed</button>
+		</div>
+		{% else %}
+		<div class="text-center">
+			<form method="post">
+				{% csrf_token %}
+				<button type="submit" name="claim_bonus" class="btn btn-success">Claim Bonus Points</button>
+			</form>
+		</div>
+		{% endif %}
     {% endif %}
 
   </div>

@@ -34,11 +34,14 @@
 <body>
   <div class="container mt-5">
     <h1>Welcome, {{ user.username }}!</h1>
-    <p>Track how much plastic waste you're preventing from going into landfills by refilling your reusable bottle.</p>
-
+	<h3 class="mt-4">
+		🌍 Plastic Waste Prevented: <strong>{{ plastic_waste_saved }} Grams</strong>
+	</h3>
+	<p><i>Track how much plastic waste you're preventing from going into landfills by refilling your reusable bottle.</i></p>
     <h3 class="mt-4">
       🏆 Total Points: <strong>{{ user.points }} Points</strong>
     </h3>
+	<p><i>Check the leaderboard to see how you stack up against your peers.</i></p>
     <h3 class="mt-4">
       💧 Water Collected: <strong>{{ user.fuelRemaining }} Droplets</strong>
     </h3>
@@ -46,7 +49,7 @@
 
     <div class="progress-container">
       <div class="progress">
-        <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%"
+        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ progress_percentage }}%"
           aria-valuenow="{{ user.fuelRemaining }}" aria-valuemin="0" aria-valuemax="{{ level_goal }}">
           {{ progress_percentage }}%
         </div>

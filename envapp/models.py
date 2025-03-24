@@ -143,6 +143,12 @@ class StationUsers(models.Model):
     class Meta:
         ordering = ['-fillTime']
 
+# Links Stations to Challenges
 class StationToChallenge(models.Model):
     waterStationID = models.IntegerField()
+    challengeID = models.IntegerField()
+    
+# Records every time a user claims points from a challenge
+class ChallengeClaims(models.Model):
+    userID = models.IntegerField()
     challengeID = models.IntegerField()
