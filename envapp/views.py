@@ -124,10 +124,7 @@ def student_dashboard(request):
     # Map bottle size to plastic waste equivalent in grams
     bottle_size_map = {
         "500ml": 10,
-        "750ml": 15,
-        "1000ml": 20,
-        "1500ml": 30,
-        "2000ml": 40,
+        "1000ml": 15,
     }
     bottle_capacity = bottle_size_map.get(bottle_size, 15)  # Default to 750ml bottle (15 grams) if not found
     
