@@ -65,6 +65,14 @@ class CustomUserCreationForm(UserCreationForm):
         help_text="Select the size of your reusable bottle."
     )
 
+    # Add explicit email field
+    email = forms.EmailField(
+        max_length=254,
+        required=True,
+        label="Email",
+        help_text="Required. Enter a valid email address."
+    )
+
     class Meta:
         model = UserTable
         fields = ["username", "password1", "password2",
