@@ -150,7 +150,6 @@ def leaderboard(request):
     users = UserTable.objects.filter(role='user').order_by('-points')
     return render(request, 'envapp/leaderboard.html', {'users': users})
 
-
 # Settings Page
 def settings_view(request):
     if not request.user.is_authenticated:
@@ -364,7 +363,7 @@ def assignStationToChallenge(request, challenge_id):
         # Handle bonus points claim for normal users
         if 'claim_bonus' in request.POST and all_visited and is_user and not user_has_claimed:
             user.points += challenge.points_reward
-            user.fuelRemaining += station.points_reward # Also add to the 'fuel' field for use in the game
+            user.fuelRemaining += challenge.points_reward # Also add to the 'fuel' field for use in the game
             user.save()
             # Record that the user has claimed the points to avoid repeat claimants
             newClaimRecord = ChallengeClaims(userID=user.id, challengeID=challenge_id)
@@ -536,6 +535,15 @@ def report_water_station(request, station_id):
         station.is_working = False
 
     station.save()
+    
+    user = request.user
+    
+    # Serve correct view based on role of user
+    if user.role == "gamekeeper":
+        return redirect('gamekeeper_map')
+    else:
+        return redirect('map')
+   
 
     messages.warning(request, f"Water station '{station.name}' has been reported as NOT WORKING.")
     return redirect('map') 
