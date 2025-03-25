@@ -2,7 +2,7 @@
 <div align="center">
   <img src="envapp/static/images/logo.png" alt="Project logo" width="200">
 </div>
-This project is now complete. Thank you for your interest.<br>
+This project is now complete. Thank you for your interest. A publicly available instance has been deployed [here](https://www.sipandsave.cloud) if you'd rather just jump in!<br>
 This is a sustainability app brought to you by The Procrastinators Dev Team!<br>
 
 USERS: Please download [this user guide](User%20Guide.docx) provided for your convenience. This walks you through basic operation of the program.  <br>
