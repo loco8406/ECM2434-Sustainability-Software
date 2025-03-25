@@ -4,7 +4,7 @@
 </div>
 This project is now complete. Thank you for your interest.<br>
 This is a sustainability app brought to you by The Procrastinators Dev Team!<br>
-
+<br>
 USERS: Please follow [this user guide](User-Guide.docx) provided for your convenience. This walks you through basic operation of the program.  <br>
 ADMINISTRATORS: Please follow the deployment guide below.
 
