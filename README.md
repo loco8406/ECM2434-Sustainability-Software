@@ -1,5 +1,5 @@
 # Sip and Save
-![Project logo](envapp/static/images/logo.png)
+![Project logo](envapp/static/images/logo.png) test
 ## Welcome
 This project is now complete. Thank you for your interest.
 This is a sustainability app brought to you by The Procrastinators Dev Team.
