@@ -1,16 +1,8 @@
-# ECM2434-Sustainability-Software
-
-## ! Important Information !
-This project is currently in the prototyping phase and the current state of the application may not accurately represent its final iteration. Subject to change.\
-As a result, only the following basic functionality is included at this time:\
--Login/Registration System\
--Referral System\
--Points Tallying\
--Leaderboard Tracking\
--Water Station Generation Gamekeepers\
--Water Station Scanning/Point accumulation
-
-While we have made efforts to make the experience stable enough for basic usage, please expect bugs and errors.
+# Sip and Save
+![Project logo](envapp/static/images/logo.png)
+## Welcome
+This project is now complete. Thank you for your interest.
+This is a sustainability app brought to you by The Procrastinators Dev Team.
 
 # Deployment Guide on AWS EC2 with Custom Domain + SSL
 
