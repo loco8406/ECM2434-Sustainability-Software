@@ -2,10 +2,10 @@
 <div align="center">
   <img src="envapp/static/images/logo.png" alt="Project logo" width="200">
 </div>
-This project is now complete. Thank you for your interest.  
-This is a sustainability app brought to you by The Procrastinators Dev Team!
+This project is now complete. Thank you for your interest.<br>
+This is a sustainability app brought to you by The Procrastinators Dev Team!<br>
 
-USERS: Please follow [this user guide](User Guide.docx) provided for your convenience. This walks you through basic operation of the program.  
+USERS: Please follow [this user guide](User Guide.docx) provided for your convenience. This walks you through basic operation of the program.  <br>
 ADMINISTRATIONS: Please follow the deployment guide below.
 
 # Deployment Guide on AWS EC2 with Custom Domain + SSL
