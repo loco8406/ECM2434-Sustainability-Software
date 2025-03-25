@@ -5,7 +5,7 @@
 This project is now complete. Thank you for your interest.<br>
 This is a sustainability app brought to you by The Procrastinators Dev Team!<br>
 
-USERS: Please follow [this user guide](User%20Guide.docx) provided for your convenience. This walks you through basic operation of the program.  <br>
+USERS: Please download [this user guide](User%20Guide.docx) provided for your convenience. This walks you through basic operation of the program.  <br>
 ADMINISTRATORS: Please follow the deployment guide below.
 
 # Deployment Guide on AWS EC2 with Custom Domain + SSL
